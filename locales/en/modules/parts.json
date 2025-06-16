@@ -1,0 +1,21 @@
+{
+  "parts": {
+    "title": "Parts",
+    "part": "Part",
+    "addPart": "Add Part",
+    "editPart": "Edit Part",
+    "partDetails": "Part Details",
+    "partNumber": "Part Number",
+    "category": "Category",
+    "supplier": "Supplier",
+    "unitPrice": "Unit Price",
+    "stockQuantity": "Stock Quantity",
+    "minStockLevel": "Min Stock Level",
+    "maxStockLevel": "Max Stock Level",
+    "reorderPoint": "Reorder Point",
+    "lastOrdered": "Last Ordered",
+    "warehouse": "Warehouse",
+    "shelf": "Shelf",
+    "bin": "Bin"
+  }
+} 

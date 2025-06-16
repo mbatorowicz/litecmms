@@ -1,0 +1,27 @@
+
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tło gradientowe -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Tło -->
+  <rect width="32" height="32" rx="3.2" fill="url(#bgGradient)"/>
+  
+  <!-- Ikona narzędzi (symbolizuje CMMS) -->
+  <g transform="translate(6.4, 6.4) scale(0.192)">
+    <!-- Klucz -->
+    <path d="M20 10 C20 15 25 20 30 20 L70 20 L70 30 L80 30 L80 40 L70 40 L70 50 L60 50 L60 40 L30 40 C25 40 20 35 20 30 Z" fill="white" stroke="white" stroke-width="2"/>
+    <circle cx="30" cy="25" r="8" fill="none" stroke="white" stroke-width="3"/>
+    
+    <!-- Śrubokręt -->
+    <path d="M50 60 L90 60 L95 65 L95 75 L90 80 L50 80 Z" fill="white"/>
+    <rect x="45" y="62" width="8" height="16" fill="white"/>
+  </g>
+  
+  <!-- Tekst LiteCMMS -->
+  <text x="16" y="27.2" font-family="Arial, sans-serif" font-size="2.56" font-weight="bold" text-anchor="middle" fill="white">LiteCMMS</text>
+</svg>

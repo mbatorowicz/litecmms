@@ -1,0 +1,21 @@
+{
+  "machines": {
+    "title": "Machines",
+    "machine": "Machine",
+    "addMachine": "Add Machine",
+    "editMachine": "Edit Machine",
+    "machineDetails": "Machine Details",
+    "serialNumber": "Serial Number",
+    "model": "Model",
+    "manufacturer": "Manufacturer",
+    "location": "Location",
+    "installationDate": "Installation Date",
+    "warrantyExpiry": "Warranty Expiry",
+    "lastMaintenance": "Last Maintenance",
+    "nextMaintenance": "Next Maintenance",
+    "operatingHours": "Operating Hours",
+    "efficiency": "Efficiency",
+    "downtime": "Downtime",
+    "maintenanceHistory": "Maintenance History"
+  }
+} 

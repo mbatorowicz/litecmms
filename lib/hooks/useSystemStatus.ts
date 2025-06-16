@@ -67,12 +67,19 @@ export function useSystemStatus(): SystemStatus {
         });
 
         if (response.ok) {
-          setApiStatus('success');
-          setApiMessage(getStatusMessage('connectionActive'));
-          
           const data = await response.json();
           
-          if (data.database?.status === 'success') {
+          // Sprawdź status API serwera - backend zwraca status: 'ok'
+          if (data.apiServer?.status === 'ok') {
+            setApiStatus('success');
+            setApiMessage(getStatusMessage('connectionActive'));
+          } else {
+            setApiStatus('warning');
+            setApiMessage(getStatusMessage('connectionError'));
+          }
+          
+          // Sprawdź status bazy danych - backend zwraca status: 'ok'
+          if (data.database?.status === 'ok') {
             setDbStatus('success');
             setDbMessage(getStatusMessage('connectionActive'));
           } else {

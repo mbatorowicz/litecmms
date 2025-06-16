@@ -1,0 +1,21 @@
+{
+  "parts": {
+    "title": "Ersatzteile",
+    "part": "Teil",
+    "addPart": "Teil hinzufügen",
+    "editPart": "Teil bearbeiten",
+    "partDetails": "Teildetails",
+    "partNumber": "Teilenummer",
+    "category": "Kategorie",
+    "supplier": "Lieferant",
+    "unitPrice": "Stückpreis",
+    "stockQuantity": "Lagerbestand",
+    "minStockLevel": "Mindestlagerbestand",
+    "maxStockLevel": "Höchstlagerbestand",
+    "reorderPoint": "Nachbestellpunkt",
+    "lastOrdered": "Zuletzt bestellt",
+    "warehouse": "Lager",
+    "shelf": "Regal",
+    "bin": "Behälter"
+  }
+} 

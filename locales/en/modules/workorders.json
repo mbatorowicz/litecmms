@@ -1,0 +1,22 @@
+{
+  "workOrders": {
+    "title": "Work Orders",
+    "workOrder": "Work Order",
+    "addWorkOrder": "Add Work Order",
+    "editWorkOrder": "Edit Work Order",
+    "workOrderDetails": "Work Order Details",
+    "orderNumber": "Order Number",
+    "type": "Type",
+    "assignedTo": "Assigned To",
+    "requestedBy": "Requested By",
+    "dueDate": "Due Date",
+    "estimatedHours": "Estimated Hours",
+    "actualHours": "Actual Hours",
+    "completionDate": "Completion Date",
+    "notes": "Notes",
+    "attachments": "Attachments",
+    "preventive": "Preventive",
+    "corrective": "Corrective",
+    "emergency": "Emergency"
+  }
+} 

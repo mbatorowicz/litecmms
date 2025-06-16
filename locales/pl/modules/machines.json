@@ -1,0 +1,21 @@
+{
+  "machines": {
+    "title": "Maszyny",
+    "machine": "Maszyna",
+    "addMachine": "Dodaj maszynę",
+    "editMachine": "Edytuj maszynę",
+    "machineDetails": "Szczegóły maszyny",
+    "serialNumber": "Numer seryjny",
+    "model": "Model",
+    "manufacturer": "Producent",
+    "location": "Lokalizacja",
+    "installationDate": "Data instalacji",
+    "warrantyExpiry": "Wygaśnięcie gwarancji",
+    "lastMaintenance": "Ostatnia konserwacja",
+    "nextMaintenance": "Następna konserwacja",
+    "operatingHours": "Godziny pracy",
+    "efficiency": "Wydajność",
+    "downtime": "Czas przestoju",
+    "maintenanceHistory": "Historia konserwacji"
+  }
+} 

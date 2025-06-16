@@ -1,0 +1,8 @@
+<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
+    <rect width="192" height="192" rx="19" fill="#2563eb"/>
+    <g transform="translate(38, 38)">
+      <rect width="116" height="116" rx="12" fill="white" opacity="0.1"/>
+      <text x="58" y="70" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">LC</text>
+      <text x="58" y="90" text-anchor="middle" fill="white" font-family="Arial" font-size="8">CMMS</text>
+    </g>
+  </svg>

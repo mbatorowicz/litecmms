@@ -1,0 +1,21 @@
+{
+  "parts": {
+    "title": "Części zamienne",
+    "part": "Część",
+    "addPart": "Dodaj część",
+    "editPart": "Edytuj część",
+    "partDetails": "Szczegóły części",
+    "partNumber": "Numer części",
+    "category": "Kategoria",
+    "supplier": "Dostawca",
+    "unitPrice": "Cena jednostkowa",
+    "stockQuantity": "Stan magazynowy",
+    "minStockLevel": "Minimalny poziom",
+    "maxStockLevel": "Maksymalny poziom",
+    "reorderPoint": "Punkt zamówienia",
+    "lastOrdered": "Ostatnie zamówienie",
+    "warehouse": "Magazyn",
+    "shelf": "Półka",
+    "bin": "Pojemnik"
+  }
+} 

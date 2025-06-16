@@ -1,0 +1,22 @@
+{
+  "workOrders": {
+    "title": "Arbeitsaufträge",
+    "workOrder": "Arbeitsauftrag",
+    "addWorkOrder": "Arbeitsauftrag hinzufügen",
+    "editWorkOrder": "Arbeitsauftrag bearbeiten",
+    "workOrderDetails": "Arbeitsauftragsdetails",
+    "orderNumber": "Auftragsnummer",
+    "type": "Typ",
+    "assignedTo": "Zugewiesen an",
+    "requestedBy": "Angefordert von",
+    "dueDate": "Fälligkeitsdatum",
+    "estimatedHours": "Geschätzte Stunden",
+    "actualHours": "Tatsächliche Stunden",
+    "completionDate": "Abschlussdatum",
+    "notes": "Notizen",
+    "attachments": "Anhänge",
+    "preventive": "Präventiv",
+    "corrective": "Korrektiv",
+    "emergency": "Notfall"
+  }
+} 

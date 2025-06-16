@@ -1,0 +1,13 @@
+{
+  "dashboard": {
+    "title": "Panel główny",
+    "overview": "Przegląd",
+    "statistics": "Statystyki",
+    "recentActivity": "Ostatnia aktywność",
+    "alerts": "Alerty",
+    "notifications": "Powiadomienia",
+    "quickActions": "Szybkie akcje",
+    "systemStatus": "Status systemu",
+    "kpis": "KPI"
+  }
+} 

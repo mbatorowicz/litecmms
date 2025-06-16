@@ -1,0 +1,21 @@
+{
+  "users": {
+    "title": "Benutzer",
+    "user": "Benutzer",
+    "addUser": "Benutzer hinzufügen",
+    "editUser": "Benutzer bearbeiten",
+    "userDetails": "Benutzerdetails",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "role": "Rolle",
+    "department": "Abteilung",
+    "phone": "Telefon",
+    "lastLogin": "Letzte Anmeldung",
+    "permissions": "Berechtigungen",
+    "administrator": "Administrator",
+    "manager": "Manager",
+    "operator": "Bediener",
+    "technician": "Techniker",
+    "reports": "Berichte"
+  }
+} 

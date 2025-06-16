@@ -4,10 +4,11 @@ import jwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
-// import bcryptPlugin from './plugins/bcrypt'; // WYŁĄCZONE
+// import bcryptPlugin from './plugins/bcrypt'; // REFAKTOR: Tymczasowo wyłączone
 import testRoutes from './routes/test';
-// import authRoutes from './routes/auth'; // TYMCZASOWO WYŁĄCZONE
-// import { authService } from './services/authService'; // TYMCZASOWO WYŁĄCZONE
+// import authRoutes from './routes/auth'; // REFAKTOR: Wymaga dalszej pracy nad typami
+// import { authService } from './services/authService'; // REFAKTOR: Tymczasowo wyłączone
+// import { authMiddleware } from './middleware/auth'; // REFAKTOR: Wymaga dalszej pracy
 
 // Ładowanie zmiennych środowiskowych
 dotenv.config({ path: 'database.env' });
@@ -32,10 +33,12 @@ const server = Fastify({
   }
 });
 
-// Rejestracja pluginów - krok 2 integracji autoryzacji
+// Rejestracja Prisma jako dekorator
+server.decorate('prisma', prisma);
 
-// Cookie plugin (wymagany dla JWT)
+// Rejestracja pluginów
 server.register(cookie);
+// server.register(bcryptPlugin); // REFAKTOR: Tymczasowo wyłączone
 
 // JWT plugin
 server.register(jwt, {
@@ -49,23 +52,18 @@ server.register(jwt, {
   }
 });
 
-// Bcrypt plugin - WYŁĄCZONE dla testów
-// server.register(bcryptPlugin);
-
 // CORS
 server.register(cors, {
   origin: 'http://localhost:3000',
   credentials: true
 });
 
-// Prisma Client dostępny globalnie - bez dekoratora
-// server.decorate('prisma', prisma); // WYŁĄCZONE - problem z typami
+// Middleware autoryzacji - REFAKTOR: Tymczasowo wyłączone  
+// server.register(authMiddleware);
 
-// Test routes - krok 4A prostego podejścia
+// Routes
 server.register(testRoutes, { prefix: '/api' });
-
-// Auth routes - TYMCZASOWO WYŁĄCZONE (problemy z typami)
-// server.register(authRoutes, { prefix: '/api/auth' });
+// server.register(authRoutes, { prefix: '/api/auth' }); // REFAKTOR: Wymaga dalszej pracy
 
 // Funkcja testowania połączenia z bazą danych
 async function testDatabaseConnection() {
@@ -144,9 +142,9 @@ const start = async () => {
     console.log(`🔌 API Status: http://localhost:${port}/api/status`);
     console.log(`⚙️  System Status: http://localhost:${port}/api/system-status`);
     console.log(`🧪 Test endpoint: http://localhost:${port}/api/test`);
-    // console.log(`🔐 Auth - Login: POST http://localhost:${port}/api/auth/login`);
-    // console.log(`🔐 Auth - Register: POST http://localhost:${port}/api/auth/register`);
-    // console.log(`🔐 Auth - Logout: POST http://localhost:${port}/api/auth/logout`);
+    // console.log(`🔐 Auth - Login: POST http://localhost:${port}/api/auth/login`); // REFAKTOR: Wyłączone
+    // console.log(`🔐 Auth - Register: POST http://localhost:${port}/api/auth/register`); // REFAKTOR: Wyłączone  
+    // console.log(`🔐 Auth - Logout: POST http://localhost:${port}/api/auth/logout`); // REFAKTOR: Wyłączone
     
   } catch (err) {
     server.log.error(err);
@@ -158,7 +156,7 @@ const start = async () => {
 process.on('SIGINT', async () => {
   console.log('\n🛑 Zamykanie serwera...');
   try {
-    // await authService.disconnect(); // WYŁĄCZONE
+    // await authService.disconnect(); // REFAKTOR: Tymczasowo wyłączone
     await prisma.$disconnect();
     await server.close();
     console.log('✅ Serwer zamknięty pomyślnie');

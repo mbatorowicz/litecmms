@@ -1,0 +1,37 @@
+{
+  "reports": {
+    "title": "Reports",
+    "generateReport": "Generate Report",
+    "reportType": "Report Type",
+    "dateRange": "Date Range",
+    "from": "From",
+    "to": "To",
+    "machineReport": "Machine Report",
+    "maintenanceReport": "Maintenance Report",
+    "downtimeReport": "Downtime Report",
+    "costReport": "Cost Report",
+    "efficiencyReport": "Efficiency Report",
+    "inventoryReport": "Inventory Report"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "notifications": "Notifications",
+    "security": "Security",
+    "integrations": "Integrations",
+    "backup": "Backup",
+    "language": "Language",
+    "timezone": "Timezone",
+    "currency": "Currency",
+    "dateFormat": "Date Format",
+    "timeFormat": "Time Format"
+  },
+  "descriptions": {
+    "machines": "Machine and production equipment management",
+    "workOrders": "Planning and tracking maintenance work",
+    "parts": "Spare parts inventory management",
+    "users": "User and permissions management",
+    "reports": "Analytics and activity reports",
+    "settings": "System configuration and preferences"
+  }
+} 
