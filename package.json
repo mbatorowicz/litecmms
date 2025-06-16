@@ -19,17 +19,14 @@
     "db:seed": "ts-node prisma/seed.ts",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
+
     "sys:start": "powershell -ExecutionPolicy Bypass -File scripts/system-manager.ps1 -Action start",
     "simple:start": "powershell -ExecutionPolicy Bypass -File scripts/simple-start.ps1",
     "sys:stop": "powershell -ExecutionPolicy Bypass -File scripts/system-manager.ps1 -Action stop",
     "sys:restart": "powershell -ExecutionPolicy Bypass -File scripts/system-manager.ps1 -Action restart",
     "sys:status": "powershell -ExecutionPolicy Bypass -File scripts/system-manager.ps1 -Action status",
     "reset": "powershell -ExecutionPolicy Bypass -File scripts/reset-system.ps1",
-    "quick-start": "powershell -ExecutionPolicy Bypass -File scripts/quick-start-simple.ps1",
-    "stop-all": "powershell -ExecutionPolicy Bypass -File scripts/stop-all.ps1",
-    "status": "powershell -ExecutionPolicy Bypass -File scripts/status-check.ps1"
+    "stop-all": "powershell -ExecutionPolicy Bypass -File scripts/stop-all.ps1"
   },
   "dependencies": {
     "@fastify/cookie": "^9.2.0",

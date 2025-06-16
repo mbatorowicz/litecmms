@@ -82,4 +82,11 @@ Desktop.ini
 # macOS
 .DS_Store
 .AppleDouble
-.LSOverride 
+.LSOverride
+
+# Local History (VS Code extension)
+.history/
+
+# Temp files
+qc
+*.tmp 
