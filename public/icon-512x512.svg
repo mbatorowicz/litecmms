@@ -1,27 +1,39 @@
 
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Tło gradientowe -->
+  <!-- Gradient background -->
   <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    <linearGradient id="bgGrad512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e7dd8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565c0;stop-opacity:1" />
     </linearGradient>
+    <filter id="shadow512">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
   </defs>
   
-  <!-- Tło -->
-  <rect width="512" height="512" rx="51.2" fill="url(#bgGradient)"/>
+  <!-- Main background with rounded corners -->
+  <rect width="512" height="512" rx="112.64" fill="url(#bgGrad512)" filter="url(#shadow512)"/>
   
-  <!-- Ikona narzędzi (symbolizuje CMMS) -->
-  <g transform="translate(102.4, 102.4) scale(3.072)">
-    <!-- Klucz -->
-    <path d="M20 10 C20 15 25 20 30 20 L70 20 L70 30 L80 30 L80 40 L70 40 L70 50 L60 50 L60 40 L30 40 C25 40 20 35 20 30 Z" fill="white" stroke="white" stroke-width="2"/>
-    <circle cx="30" cy="25" r="8" fill="none" stroke="white" stroke-width="3"/>
+  <!-- Inner content area -->
+  <g transform="translate(76.8, 76.8)">
+    <!-- Gear wheel -->
+    <g transform="translate(179.2, 128) scale(4.096)">
+      <path d="M50 15 L55 20 L65 18 L70 23 L80 25 L82 35 L92 40 L90 50 L82 55 L80 65 L70 67 L65 72 L55 70 L50 75 L45 70 L35 72 L30 67 L20 65 L18 55 L8 50 L10 40 L18 35 L20 25 L30 23 L35 18 L45 20 Z" 
+            fill="white" opacity="0.95"/>
+      <circle cx="50" cy="50" r="15" fill="#1565c0"/>
+      <circle cx="50" cy="50" r="8" fill="white"/>
+    </g>
     
-    <!-- Śrubokręt -->
-    <path d="M50 60 L90 60 L95 65 L95 75 L90 80 L50 80 Z" fill="white"/>
-    <rect x="45" y="62" width="8" height="16" fill="white"/>
+    <!-- Wrench/Key tool -->
+    <g transform="translate(230.4, 230.4) scale(3.072) rotate(45)">
+      <rect x="0" y="15" width="60" height="8" rx="4" fill="white" opacity="0.95"/>
+      <rect x="55" y="10" width="8" height="18" rx="4" fill="white" opacity="0.95"/>
+      <rect x="50" y="5" width="8" height="28" rx="4" fill="white" opacity="0.95"/>
+      <circle cx="8" cy="19" r="12" fill="none" stroke="white" stroke-width="6" opacity="0.95"/>
+    </g>
   </g>
   
-  <!-- Tekst LiteCMMS -->
-  <text x="256" y="435.2" font-family="Arial, sans-serif" font-size="40.96" font-weight="bold" text-anchor="middle" fill="white">LiteCMMS</text>
+  <!-- Professional highlight -->
+  <rect x="51.2" y="51.2" width="409.6" height="153.6" 
+        rx="51.2" fill="url(#bgGrad512)" opacity="0.2"/>
 </svg>

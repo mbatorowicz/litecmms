@@ -1,0 +1,29 @@
+
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="maskGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e7dd8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565c0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circular background -->
+  <circle cx="96" cy="96" r="96" fill="url(#maskGrad192)"/>
+  
+  <!-- Content area -->
+  <g transform="translate(38.400000000000006, 38.400000000000006)">
+    <!-- Gear -->
+    <g transform="translate(48, 28.799999999999997) scale(1.1520000000000001)">
+      <path d="M50 15 L55 20 L65 18 L70 23 L80 25 L82 35 L92 40 L90 50 L82 55 L80 65 L70 67 L65 72 L55 70 L50 75 L45 70 L35 72 L30 67 L20 65 L18 55 L8 50 L10 40 L18 35 L20 25 L30 23 L35 18 L45 20 Z" 
+            fill="white"/>
+      <circle cx="50" cy="50" r="12" fill="#1565c0"/>
+    </g>
+    
+    <!-- Wrench -->
+    <g transform="translate(67.19999999999999, 67.19999999999999) scale(0.96) rotate(45)">
+      <rect x="0" y="15" width="50" height="6" rx="3" fill="white"/>
+      <rect x="45" y="12" width="6" height="12" rx="3" fill="white"/>
+      <circle cx="6" cy="18" r="8" fill="none" stroke="white" stroke-width="4"/>
+    </g>
+  </g>
+</svg>
