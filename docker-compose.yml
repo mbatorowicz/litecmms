@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: litecmms-postgres
+    environment:
+      POSTGRES_DB: litecmms
+      POSTGRES_USER: cmms_user
+      POSTGRES_PASSWORD: cmms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - cmms-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: litecmms-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - cmms-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: litecmms-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./uploads:/var/www/uploads
+    depends_on:
+      - app
+      - server
+    networks:
+      - cmms-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: litecmms-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://server:3001
+    depends_on:
+      - server
+    networks:
+      - cmms-network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: litecmms-backend
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://cmms_user:cmms_password@postgres:5432/litecmms?schema=public
+      - REDIS_URL=redis://redis:6379
+      - PORT=3001
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - cmms-network
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  cmms-network:
+    driver: bridge 

@@ -1,0 +1,493 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  ADMINISTRATOR
+  MANAGER
+  OPERATOR
+  TECHNICIAN
+  REPORTS
+}
+
+enum MachineStatus {
+  OPERATIONAL
+  MAINTENANCE
+  DOWN
+  RETIRED
+}
+
+enum WorkOrderStatus {
+  CREATED
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CLOSED
+  CANCELLED
+}
+
+enum WorkOrderType {
+  PLANNED
+  REACTIVE
+  EMERGENCY
+}
+
+enum WorkOrderPriority {
+  LOW
+  NORMAL
+  URGENT
+  EMERGENCY
+}
+
+enum MaintenanceType {
+  TIME_BASED
+  USAGE_BASED
+  CYCLE_BASED
+  CONDITION_BASED
+}
+
+enum NotificationType {
+  OVERDUE_MAINTENANCE
+  MACHINE_DOWN
+  LOW_STOCK
+  SLA_BREACH
+  SAFETY_INCIDENT
+  WORK_ORDER_ASSIGNED
+  WORK_ORDER_COMPLETED
+}
+
+enum AlertLevel {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+// Core Models
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  username          String    @unique
+  firstName         String
+  lastName          String
+  role              UserRole
+  isActive          Boolean   @default(true)
+  passwordHash      String
+  phone             String?
+  avatar            String?
+  language          String    @default("pl")
+  timezone          String    @default("Europe/Warsaw")
+  lastLogin         DateTime?
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  company           Company   @relation(fields: [companyId], references: [id])
+  companyId         String
+  locations         UserLocation[]
+  workOrders        WorkOrder[]
+  workOrderHistory  WorkOrderHistory[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+  refreshTokens     RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  logo        String?
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+  timezone    String   @default("Europe/Warsaw")
+  language    String   @default("pl")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users       User[]
+  locations   Location[]
+  categories  Category[]
+
+  @@map("companies")
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company     Company  @relation(fields: [companyId], references: [id])
+  companyId   String
+  areas       Area[]
+  users       UserLocation[]
+  parts       Part[]
+  workOrders  WorkOrder[]
+
+  @@map("locations")
+}
+
+model UserLocation {
+  id         String   @id @default(cuid())
+  userId     String
+  locationId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, locationId])
+  @@map("user_locations")
+}
+
+model Area {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  location    Location @relation(fields: [locationId], references: [id])
+  locationId  String
+  machines    Machine[]
+
+  @@map("areas")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  color       String?   @default("#6B7280")
+  icon        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String
+  machines    Machine[]
+
+  @@map("categories")
+}
+
+model Machine {
+  id                String        @id @default(cuid())
+  name              String
+  model             String?
+  manufacturer      String?
+  serialNumber      String?
+  inventoryNumber   String?       @unique
+  purchaseDate      DateTime?
+  warrantyEndDate   DateTime?
+  initialValue      Decimal?
+  currentValue      Decimal?
+  status            MachineStatus @default(OPERATIONAL)
+  uptime            Decimal       @default(100.0)
+  description       String?
+  qrCode            String?       @unique
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  area              Area          @relation(fields: [areaId], references: [id])
+  areaId            String
+  category          Category?     @relation(fields: [categoryId], references: [id])
+  categoryId        String?
+  modules           MachineModule[]
+  documents         Document[]
+  maintenancePlans  MaintenancePlan[]
+  workOrders        WorkOrder[]
+  statusHistory     MachineStatusHistory[]
+
+  @@map("machines")
+}
+
+model MachineModule {
+  id           String   @id @default(cuid())
+  name         String
+  type         String?
+  manufacturer String?
+  partNumber   String?
+  status       String   @default("OPERATIONAL")
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  machine      Machine  @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  machineId    String
+  documents    Document[]
+  moduleHistory ModuleHistory[]
+
+  @@map("machine_modules")
+}
+
+model ModuleHistory {
+  id          String        @id @default(cuid())
+  action      String        // INSTALLED, REPLACED, REMOVED, REPAIRED
+  description String?
+  cost        Float?
+  performedAt DateTime      @default(now())
+
+  // Relations
+  module      MachineModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String
+  workOrder   WorkOrder?    @relation(fields: [workOrderId], references: [id])
+  workOrderId String?
+
+  @@map("module_history")
+}
+
+model MachineStatusHistory {
+  id          String        @id @default(cuid())
+  oldStatus   MachineStatus
+  newStatus   MachineStatus
+  reason      String?
+  changedAt   DateTime      @default(now())
+
+  // Relations
+  machine     Machine       @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  machineId   String
+
+  @@map("machine_status_history")
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // PDF, IMAGE, MANUAL, CERTIFICATE, etc.
+  fileUrl     String
+  fileSize    Int?
+  description String?
+  uploadedAt  DateTime @default(now())
+
+  // Relations
+  machine     Machine? @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  machineId   String?
+  module      MachineModule? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String?
+
+  @@map("documents")
+}
+
+model MaintenancePlan {
+  id                String          @id @default(cuid())
+  name              String
+  description       String?
+  type              MaintenanceType
+  frequency         Int             // Days, hours, cycles, etc.
+  frequencyUnit     String          // DAYS, HOURS, CYCLES, etc.
+  estimatedDuration Int?            // Minutes
+  isActive          Boolean         @default(true)
+  instructions      String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  machine           Machine         @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  machineId         String
+  workOrders        WorkOrder[]
+  requiredParts     MaintenancePlanPart[]
+
+  @@map("maintenance_plans")
+}
+
+model MaintenancePlanPart {
+  id         String @id @default(cuid())
+  quantity   Int    @default(1)
+
+  // Relations
+  plan       MaintenancePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId     String
+  part       Part            @relation(fields: [partId], references: [id], onDelete: Cascade)
+  partId     String
+
+  @@unique([planId, partId])
+  @@map("maintenance_plan_parts")
+}
+
+model WorkOrder {
+  id                String             @id @default(cuid())
+  title             String
+  description       String?
+  type              WorkOrderType
+  priority          WorkOrderPriority  @default(NORMAL)
+  status            WorkOrderStatus    @default(CREATED)
+  estimatedDuration Int?               // Minutes
+  actualDuration    Int?               // Minutes
+  scheduledDate     DateTime?
+  startDate         DateTime?
+  endDate           DateTime?
+  cost              Float?
+  instructions      String?
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  machine           Machine            @relation(fields: [machineId], references: [id])
+  machineId         String
+  location          Location           @relation(fields: [locationId], references: [id])
+  locationId        String
+  assignedTo        User?              @relation(fields: [assignedToId], references: [id])
+  assignedToId      String?
+  maintenancePlan   MaintenancePlan?   @relation(fields: [maintenancePlanId], references: [id])
+  maintenancePlanId String?
+  
+  // Related data
+  usedParts         WorkOrderPart[]
+  history           WorkOrderHistory[]
+  moduleHistory     ModuleHistory[]
+
+  @@map("work_orders")
+}
+
+model WorkOrderPart {
+  id         String @id @default(cuid())
+  quantity   Int
+  cost       Float?
+
+  // Relations
+  workOrder  WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  workOrderId String
+  part       Part      @relation(fields: [partId], references: [id])
+  partId     String
+
+  @@map("work_order_parts")
+}
+
+model WorkOrderHistory {
+  id          String           @id @default(cuid())
+  action      String           // STATUS_CHANGED, ASSIGNED, COMMENT_ADDED, etc.
+  oldValue    String?
+  newValue    String?
+  description String?
+  timestamp   DateTime         @default(now())
+
+  // Relations
+  workOrder   WorkOrder        @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  workOrderId String
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("work_order_history")
+}
+
+model Part {
+  id            String   @id @default(cuid())
+  name          String
+  partNumber    String   @unique
+  description   String?
+  category      String?
+  manufacturer  String?
+  supplier      String?
+  unitPrice     Float?
+  stockQuantity Int      @default(0)
+  minStockLevel Int      @default(0)
+  maxStockLevel Int?
+  unit          String   @default("piece") // piece, kg, liter, etc.
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  location      Location @relation(fields: [locationId], references: [id])
+  locationId    String
+  workOrderParts WorkOrderPart[]
+  maintenancePlanParts MaintenancePlanPart[]
+  stockHistory  StockHistory[]
+
+  @@map("parts")
+}
+
+model StockHistory {
+  id          String   @id @default(cuid())
+  action      String   // IN, OUT, ADJUSTMENT
+  quantity    Int
+  reason      String?
+  cost        Float?
+  timestamp   DateTime @default(now())
+
+  // Relations
+  part        Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+  partId      String
+
+  @@map("stock_history")
+}
+
+model Notification {
+  id          String            @id @default(cuid())
+  type        NotificationType
+  title       String
+  message     String
+  level       AlertLevel        @default(INFO)
+  isRead      Boolean           @default(false)
+  data        Json?             // Additional data for the notification
+  createdAt   DateTime          @default(now())
+
+  // Relations
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  entity      String   // TABLE_NAME
+  entityId    String   // RECORD_ID
+  action      String   // CREATE, UPDATE, DELETE
+  oldValues   Json?
+  newValues   Json?
+  timestamp   DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  category  String   @default("general")
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+} 
