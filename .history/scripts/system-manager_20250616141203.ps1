@@ -341,12 +341,10 @@ switch ($Action) {
                 Test-SystemStatus
                 Write-Host ""
                 Write-Host "=== SYSTEM URUCHOMIONY ===" -ForegroundColor Green
-                Write-Host "🌐 Frontend: http://localhost:3000" -ForegroundColor White
+                Write-Host "🌐 Frontend: http://localhost:3000 (lub auto-port)" -ForegroundColor White
                 Write-Host "🔧 Backend:  http://localhost:3001" -ForegroundColor White
                 Write-Host "❤️  Health:   http://localhost:3001/health" -ForegroundColor White
                 Write-Host "📊 Status:   http://localhost:3001/api/system-status" -ForegroundColor White
-                Write-Host ""
-                Write-Host "⚠️  UWAGA: Frontend ZAWSZE na porcie 3000!" -ForegroundColor Yellow
             } else {
                 Write-Host "BLAD: Frontend nie uruchomil sie poprawnie" -ForegroundColor Red
             }

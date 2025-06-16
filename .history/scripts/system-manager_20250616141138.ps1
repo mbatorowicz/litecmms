@@ -254,9 +254,10 @@ function Start-Frontend {
             Write-Host "🌐 Frontend dostępny na: $frontendUrl" -ForegroundColor Cyan
             return $true
         } else {
-            Write-Host "❌ BŁĄD: Frontend nie uruchomił się na porcie 3000!" -ForegroundColor Red
-            Write-Host "Sprawdz okno terminala z 'npm run dev'" -ForegroundColor Yellow
-            Write-Host "⚠️  Frontend MUSI być na porcie 3000!" -ForegroundColor Yellow
+            Write-Host "❌ BŁĄD: Frontend nie uruchomił się prawidłowo" -ForegroundColor Red
+            Write-Host "Sprawdz okno terminala z '$npmCommand'" -ForegroundColor Yellow
+            Write-Host "🔍 Oczekiwany port: $expectedPort" -ForegroundColor Yellow
+            Write-Host "📋 Sprawdzone porty: 3000, 3002-3004" -ForegroundColor Gray
             return $false
         }
         
@@ -289,15 +290,26 @@ function Test-SystemStatus {
         $results += "System Status: BLAD - $($_.Exception.Message)"
     }
     
-    # Test frontendu - TYLKO PORT 3000!
+    # Test frontendu - NAPRAWIONY
     $frontendOk = $false
+    $frontendPorts = @(3000, 3002, 3003, 3004, 3005)
+    $frontendFound = $false
     
-    try {
-        $frontend = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 4
-        $results += "Frontend (3000): OK - HTTP $($frontend.StatusCode)"
-        $frontendOk = $true
-    } catch {
-        $results += "Frontend: BŁĄD - Nie odpowiada na porcie 3000!"
+    foreach ($port in $frontendPorts) {
+        try {
+            $frontend = Invoke-WebRequest -Uri "http://localhost:$port" -TimeoutSec 4
+            $results += "Frontend ($port): OK - HTTP $($frontend.StatusCode)"
+            $frontendOk = $true
+            $frontendFound = $true
+            break
+        } catch {
+            # Kontynuuj sprawdzanie następnego portu
+            continue
+        }
+    }
+    
+    if (-not $frontendFound) {
+        $results += "Frontend: BŁĄD - Nie odpowiada na portach 3000, 3002-3005"
     }
     
     # Wyswietl wyniki
@@ -341,12 +353,10 @@ switch ($Action) {
                 Test-SystemStatus
                 Write-Host ""
                 Write-Host "=== SYSTEM URUCHOMIONY ===" -ForegroundColor Green
-                Write-Host "🌐 Frontend: http://localhost:3000" -ForegroundColor White
+                Write-Host "🌐 Frontend: http://localhost:3000 (lub auto-port)" -ForegroundColor White
                 Write-Host "🔧 Backend:  http://localhost:3001" -ForegroundColor White
                 Write-Host "❤️  Health:   http://localhost:3001/health" -ForegroundColor White
                 Write-Host "📊 Status:   http://localhost:3001/api/system-status" -ForegroundColor White
-                Write-Host ""
-                Write-Host "⚠️  UWAGA: Frontend ZAWSZE na porcie 3000!" -ForegroundColor Yellow
             } else {
                 Write-Host "BLAD: Frontend nie uruchomil sie poprawnie" -ForegroundColor Red
             }
