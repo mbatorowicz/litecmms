@@ -16,8 +16,8 @@ export const auditMiddleware: FastifyPluginAsync = async function (fastify) {
     auditData: AuditData
   ) {
     try {
-      if (!request.user) {
-        return; // Nie logujemy jeśli brak użytkownika
+      if (!request.user || typeof request.user !== 'object' || !('id' in request.user)) {
+        return; // Nie logujemy jeśli brak użytkownika lub błędny typ
       }
 
       await fastify.prisma.auditLog.create({
@@ -27,7 +27,7 @@ export const auditMiddleware: FastifyPluginAsync = async function (fastify) {
           action: auditData.action,
           oldValues: auditData.oldValues || null,
           newValues: auditData.newValues || null,
-          userId: request.user.id,
+          userId: (request.user as any).id,
           ipAddress: getClientIp(request),
           userAgent: request.headers['user-agent'] || null
         }

@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 // import bcryptPlugin from './plugins/bcrypt'; // REFAKTOR: Tymczasowo wyłączone
 import testRoutes from './routes/test';
-// import authRoutes from './routes/auth'; // REFAKTOR: Wymaga dalszej pracy nad typami
+import authRoutes from './routes/auth'; // REFAKTOR: PRZYWRÓCENIE - FAZA 2
 // import { authService } from './services/authService'; // REFAKTOR: Tymczasowo wyłączone
 // import { authMiddleware } from './middleware/auth'; // REFAKTOR: Wymaga dalszej pracy
 
@@ -63,7 +63,7 @@ server.register(cors, {
 
 // Routes
 server.register(testRoutes, { prefix: '/api' });
-// server.register(authRoutes, { prefix: '/api/auth' }); // REFAKTOR: Wymaga dalszej pracy
+server.register(authRoutes, { prefix: '/api/auth' }); // REFAKTOR: PRZYWRÓCENIE - FAZA 2
 
 // Funkcja testowania połączenia z bazą danych
 async function testDatabaseConnection() {

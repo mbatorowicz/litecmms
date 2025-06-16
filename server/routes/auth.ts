@@ -35,14 +35,12 @@ const resetPasswordSchema = z.object({
 const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
 
   // POST /api/auth/login - BEZPIECZNE PODEJŚCIE
-  fastify.post('/login', {
-    schema: {
-      body: loginSchema
-    }
-  }, async (request, reply) => {
-    const { email, password } = request.body as z.infer<typeof loginSchema>;
-
+  fastify.post('/login', async (request, reply) => {
     try {
+      // Walidacja przez Zod
+      const validatedData = loginSchema.parse(request.body);
+      const { email, password } = validatedData;
+
       // Znajdź użytkownika przez AuthService
       const user = await authService.findUserByEmail(email);
 
@@ -110,6 +108,16 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
       });
 
     } catch (error) {
+      // Obsługa błędów walidacji Zod
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({
+          error: 'Błąd walidacji',
+          message: error.errors[0].message,
+          details: error.errors
+        });
+        return;
+      }
+
       fastify.log.error(error);
       reply.code(500).send({
         error: 'Błąd serwera',
@@ -119,15 +127,12 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
   });
 
   // POST /api/auth/register - BEZPIECZNE PODEJŚCIE
-  fastify.post('/register', {
-    schema: {
-      body: registerSchema
-    }
-  }, async (request, reply) => {
-    const { email, username, firstName, lastName, password, companyName, phone } = 
-      request.body as z.infer<typeof registerSchema>;
-
+  fastify.post('/register', async (request, reply) => {
     try {
+      // Walidacja przez Zod
+      const validatedData = registerSchema.parse(request.body);
+      const { email, username, firstName, lastName, password, companyName, phone } = validatedData;
+
       // Sprawdź czy użytkownik już istnieje przez AuthService
       const existingUser = await authService.userExists(email, username);
 
@@ -164,6 +169,16 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
       });
 
     } catch (error) {
+      // Obsługa błędów walidacji Zod
+      if (error instanceof z.ZodError) {
+        reply.code(400).send({
+          error: 'Błąd walidacji',
+          message: error.errors[0].message,
+          details: error.errors
+        });
+        return;
+      }
+
       fastify.log.error(error);
       reply.code(500).send({
         error: 'Błąd serwera',

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { I18nProvider } from '@/components/providers/I18nProvider';
+import { AuthProvider } from '@/lib/hooks/useAuth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,6 +37,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   themeColor: '#2563eb',
   colorScheme: 'light',
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -47,9 +49,11 @@ export default function RootLayout({
     <html lang="pl" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <I18nProvider>
-          <div id="root">
-            {children}
-          </div>
+          <AuthProvider>
+            <div id="root">
+              {children}
+            </div>
+          </AuthProvider>
         </I18nProvider>
       </body>
     </html>

@@ -38,16 +38,25 @@ export class AuthService {
       companyId: user.companyId
     };
 
+    const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+    const refreshSecret = process.env.JWT_REFRESH_SECRET || 'refresh-secret';
+
+    // Naprawiony JWT access token z jawną konfiguracją
     const accessToken = jwt.sign(
       payload,
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+      jwtSecret,
+      { 
+        expiresIn: process.env.JWT_EXPIRES_IN || '15m'
+      } as jwt.SignOptions
     );
 
+    // Naprawiony JWT refresh token z jawną konfiguracją
     const refreshToken = jwt.sign(
       { id: user.id, type: 'refresh' },
-      process.env.JWT_REFRESH_SECRET || 'refresh-secret',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      refreshSecret,
+      { 
+        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
+      } as jwt.SignOptions
     );
 
     return { accessToken, refreshToken };
@@ -56,7 +65,8 @@ export class AuthService {
   // Weryfikacja tokena JWT
   async verifyToken(token: string): Promise<any> {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+      const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+      const decoded = jwt.verify(token, jwtSecret);
       return decoded;
     } catch (error) {
       throw new Error('Invalid token');
