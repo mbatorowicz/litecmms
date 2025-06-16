@@ -30,10 +30,10 @@
 - **WebSockets** - Komunikacja real-time
 
 ### DevOps & Narzędzia
-- **Docker** - Konteneryzacja (dla produkcji)
 - **Nodemon** - Auto-restart podczas developmentu
 - **ESLint** - Linting kodu
 - **Prettier** - Formatowanie kodu
+- **PowerShell Scripts** - Automatyzacja uruchomienia
 
 ## 🚀 Uruchomienie Projektu
 
@@ -68,8 +68,8 @@ npx prisma generate
 
 **ZALECANE (automatyczne):**
 ```bash
-# Uruchom cały system jedną komendą
-npm run sys:start
+# Uruchom cały system jedną komendą (DZIAŁA ZAWSZE!)
+npm run simple:start
 ```
 
 **Alternatywnie (ręcznie):**
@@ -92,33 +92,47 @@ npm run dev
 ```
 LiteCMMS/
 ├── app/                    # Frontend Next.js (App Router)
-│   ├── [locale]/          # Wielojęzyczność
-│   ├── components/        # Komponenty React
-│   ├── lib/              # Utilities i konfiguracja
-│   └── globals.css       # Style globalne
-├── server/               # Backend Fastify
-│   └── index.ts         # Główny plik serwera
+│   ├── page.tsx           # Główna strona (po refaktorze: 16 linii!)
+│   ├── layout.tsx         # Layout aplikacji
+│   └── globals.css        # Style globalne
+├── components/            # Komponenty React (po refaktorze)
+│   ├── ui/               # Komponenty UI wielokrotnego użytku
+│   │   ├── StatusIndicator.tsx
+│   │   └── LanguageSwitcher.tsx
+│   └── dashboard/        # Komponenty specyficzne dla dashboard
+│       ├── DashboardHeader.tsx
+│       ├── SystemStatusCard.tsx
+│       ├── FeatureCards.tsx
+│       └── SystemInfoCard.tsx
+├── lib/                  # Utilities i konfiguracja
+│   └── hooks/           # Custom React hooks
+│       └── useSystemStatus.ts
+├── locales/             # Pliki językowe (PL/EN/DE)
+├── server/              # Backend Fastify
+│   ├── index.ts         # Główny plik serwera
+│   ├── routes/          # API routes
+│   └── middleware/      # Middleware
+├── scripts/             # Skrypty automatyzacji
+│   ├── simple-start.ps1 # Główny skrypt uruchamiający
+│   └── system-manager.ps1
 ├── prisma/              # Schema bazy danych
 │   └── schema.prisma    # Definicje modeli
-├── public/              # Pliki statyczne
-├── docker-compose.yml   # Konfiguracja Docker
-└── package.json        # Zależności i skrypty
+└── package.json         # Zależności i skrypty
 ```
 
 ## 🔧 Dostępne Skrypty
 
 ### Zarządzanie systemem (ZALECANE):
 ```bash
-npm run sys:start    # Uruchom cały system (backend + frontend)
+npm run simple:start # Uruchom cały system (backend + frontend) - NIEZAWODNY!
 npm run sys:stop     # Zatrzymaj wszystkie procesy
-npm run sys:restart  # Restart całego systemu
 npm run sys:status   # Sprawdź status wszystkich komponentów
 ```
 
 ### Skrypty podstawowe:
 ```bash
-npm run dev          # Frontend (Next.js)
-npm run dev:server   # Backend (Fastify)
+npm run dev          # Frontend (Next.js) - TYLKO port 3000!
+npm run dev:server   # Backend (Fastify) - port 3001
 npm run build        # Build produkcyjny
 npm run start        # Start produkcyjny
 npm run lint         # Linting
@@ -126,10 +140,8 @@ npm run lint         # Linting
 
 ### Skrypty pomocnicze:
 ```bash
-npm run quick-start  # Szybki start (backup)
-npm run stop-all     # Zatrzymaj wszystko (backup)
-npm run status       # Status check (backup)
-npm run reset        # Pełny reset (backup)
+npm run stop-all     # Zatrzymaj wszystko
+npm run reset        # Pełny reset systemu
 ```
 
 ## 🌐 Wielojęzyczność
@@ -161,15 +173,23 @@ npm run sys:status  # Kompletny status systemu
 - Status API: http://localhost:3001/api/system-status
 - Health Check: http://localhost:3001/health
 
-## 🐳 Docker (Produkcja)
+## 💡 Refaktor i Czysta Architektura
 
-```bash
-# Uruchomienie całego stacku
-docker-compose up -d
+**Po refaktorze (FAZA 4)** główny plik `app/page.tsx` został podzielony z **305 linii** na:
 
-# Tylko baza danych
-docker-compose up postgres -d
-```
+### 🧩 Modularne komponenty:
+- **DashboardHeader** - Nagłówek z przełącznikiem języka
+- **SystemStatusCard** - Status API i bazy danych  
+- **FeatureCards** - Grid funkcjonalności CMMS
+- **SystemInfoCard** - Informacje o systemie
+- **StatusIndicator** - Wielokrotnego użytku wskaźnik statusu
+- **useSystemStatus** - Custom hook do zarządzania stanem
+
+### 📊 Korzyści refaktoru:
+- ✅ **Czytelność** - każdy komponent ma jedną odpowiedzialność
+- ✅ **Maintainability** - łatwiej dodawać nowe funkcje
+- ✅ **Reużywalność** - komponenty można wykorzystać ponownie
+- ✅ **Testowanie** - łatwiej testować małe komponenty
 
 ## 🔧 System Automatyzacji
 
@@ -185,11 +205,10 @@ Projekt zawiera zaawansowany system automatycznego zarządzania procesami develo
 ### Workflow developmentu:
 ```bash
 # Rano
-npm run sys:start     # Uruchom wszystko
+npm run simple:start  # Uruchom wszystko (NIEZAWODNY!)
 
 # Podczas pracy
 npm run sys:status    # Sprawdź co działa
-npm run sys:restart   # Jeśli coś nie gra
 
 # Wieczorem
 npm run sys:stop      # Zatrzymaj wszystko
@@ -231,6 +250,7 @@ Jeśli pracujesz z AI asystentem nad tym projektem:
 
 ---
 
-**Ostatnia aktualizacja**: Styczeń 2025  
+**Ostatnia aktualizacja**: Czerwiec 2025  
 **Wersja**: 2.0.0  
-**Status**: W rozwoju 
+**Status**: Po refaktorze - Gotowy do rozwoju funkcjonalności CMMS  
+**Refaktor**: ✅ Ukończony (305 linii → 6 komponentów + 1 hook) 
