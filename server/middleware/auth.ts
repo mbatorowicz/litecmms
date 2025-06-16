@@ -1,4 +1,5 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
+import { PrismaClient } from '@prisma/client';
 
 interface AuthOptions {
   requireAuth?: boolean;
@@ -12,56 +13,67 @@ interface JWTPayload {
   companyId: string;
 }
 
+interface FastifyInstanceWithPrisma {
+  prisma: PrismaClient;
+}
+
 export const authMiddleware: FastifyPluginAsync = async function (fastify) {
+  // Explicit casting dla Prisma
+  const fastifyWithPrisma = fastify as typeof fastify & FastifyInstanceWithPrisma;
+  
+  // Funkcja pomocnicza do weryfikacji użytkownika
+  async function authenticateUser(request: FastifyRequest): Promise<any> {
+    const token = request.cookies.token || 
+                 request.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      throw new Error('No token provided');
+    }
+
+    // Weryfikacja JWT z poprawnym typowaniem
+    const decoded = await request.jwtVerify() as JWTPayload;
+    
+    // Pobranie pełnych danych użytkownika z bazy
+    const user = await fastifyWithPrisma.prisma.user.findUnique({
+      where: { id: decoded.id },
+      include: {
+        company: true,
+        locations: {
+          include: {
+            location: true
+          }
+        }
+      }
+    });
+
+    if (!user || !user.isActive) {
+      throw new Error('User not found or inactive');
+    }
+
+    // Aktualizacja ostatniego logowania
+    await fastifyWithPrisma.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() }
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      companyId: user.companyId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      locations: user.locations.map((ul: any) => ul.location),
+      company: user.company
+    };
+  }
+
   // Decorator do weryfikacji tokena
   fastify.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
     try {
-      const token = request.cookies.token || 
-                   request.headers.authorization?.replace('Bearer ', '');
-
-      if (!token) {
-        throw new Error('No token provided');
-      }
-
-      // Weryfikacja JWT z poprawnym typowaniem
-      const decoded = await request.jwtVerify() as JWTPayload;
-      
-      // Pobranie pełnych danych użytkownika z bazy
-      const user = await fastify.prisma.user.findUnique({
-        where: { id: decoded.id },
-        include: {
-          company: true,
-          locations: {
-            include: {
-              location: true
-            }
-          }
-        }
-      });
-
-      if (!user || !user.isActive) {
-        throw new Error('User not found or inactive');
-      }
-
-      // Dodanie danych użytkownika do request z poprawnymi typami
-      request.user = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        companyId: user.companyId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        locations: user.locations.map((ul: any) => ul.location),
-        company: user.company
-      };
-
-      // Aktualizacja ostatniego logowania
-      await fastify.prisma.user.update({
-        where: { id: user.id },
-        data: { lastLogin: new Date() }
-      });
-
+      const user = await authenticateUser(request);
+      request.user = user;
     } catch (err) {
       reply.code(401).send({
         error: 'Unauthorized',
@@ -75,7 +87,8 @@ export const authMiddleware: FastifyPluginAsync = async function (fastify) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         if (!request.user) {
-          await fastify.authenticate(request, reply);
+          const user = await authenticateUser(request);
+          request.user = user;
         }
 
         const user = request.user as any;
@@ -100,7 +113,8 @@ export const authMiddleware: FastifyPluginAsync = async function (fastify) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         if (!request.user) {
-          await fastify.authenticate(request, reply);
+          const user = await authenticateUser(request);
+          request.user = user;
         }
 
         const user = request.user as any;
@@ -152,7 +166,15 @@ export const authMiddleware: FastifyPluginAsync = async function (fastify) {
 
     // Automatyczna autoryzacja dla chronionej API
     if (request.url.startsWith('/api/')) {
-      await fastify.authenticate(request, reply);
+      try {
+        const user = await authenticateUser(request);
+        request.user = user;
+      } catch (err) {
+        reply.code(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required'
+        });
+      }
     }
   });
 };

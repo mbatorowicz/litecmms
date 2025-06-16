@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 import testRoutes from './routes/test';
 import authRoutes from './routes/auth'; // REFAKTOR: PRZYWRÓCENIE - FAZA 2
 // import { authService } from './services/authService'; // REFAKTOR: Tymczasowo wyłączone
-// import { authMiddleware } from './middleware/auth'; // REFAKTOR: Wymaga dalszej pracy
+import { authMiddleware } from './middleware/auth'; // REFAKTOR: PRZYWRÓCENIE - FAZA 3
 
 // Ładowanie zmiennych środowiskowych
 dotenv.config({ path: 'database.env' });
@@ -58,8 +58,8 @@ server.register(cors, {
   credentials: true
 });
 
-// Middleware autoryzacji - REFAKTOR: Tymczasowo wyłączone  
-// server.register(authMiddleware);
+// Middleware autoryzacji - REFAKTOR: PRZYWRÓCENIE - FAZA 3
+server.register(authMiddleware);
 
 // Routes
 server.register(testRoutes, { prefix: '/api' });
