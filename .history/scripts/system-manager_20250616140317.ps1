@@ -232,38 +232,24 @@ function Start-Frontend {
         Write-Host "Czekam 25 sekund na uruchomienie frontendu..." -ForegroundColor Gray
         Start-Sleep -Seconds 25
         
-        # NAPRAWIONE: Sprawdź oczekiwany port + fallbacki
-        Write-Host "Głównie sprawdzam port $expectedPort..." -ForegroundColor Gray
+        # NAPRAWIONE: Sprawdz wszystkie możliwe porty Next.js
+        $possiblePorts = @(3000, 3002, 3003, 3004, 3005)
         $frontendFound = $false
         $frontendUrl = ""
         
-        # Najpierw sprawdź oczekiwany port
-        try {
-            $response = Invoke-WebRequest -Uri "http://localhost:$expectedPort" -TimeoutSec 10
-            if ($response.StatusCode -eq 200) {
-                Write-Host "✅ Frontend dziala na oczekiwanym porcie $expectedPort!" -ForegroundColor Green
-                $frontendUrl = "http://localhost:$expectedPort"
-                $frontendFound = $true
-            }
-        } catch {
-            Write-Host "⚠️  Port $expectedPort nie odpowiada, sprawdzam alternatywy..." -ForegroundColor Yellow
-            
-            # Sprawdź inne możliwe porty jako fallback
-            $backupPorts = @(3000, 3002, 3003, 3004) | Where-Object { $_ -ne $expectedPort }
-            
-            foreach ($port in $backupPorts) {
-                try {
-                    Write-Host "Sprawdzanie portu $port..." -ForegroundColor Gray
-                    $response = Invoke-WebRequest -Uri "http://localhost:$port" -TimeoutSec 6
-                    if ($response.StatusCode -eq 200) {
-                        Write-Host "✅ Frontend dziala na alternatywnym porcie $port!" -ForegroundColor Green
-                        $frontendUrl = "http://localhost:$port"
-                        $frontendFound = $true
-                        break
-                    }
-                } catch {
-                    continue
+        foreach ($port in $possiblePorts) {
+            try {
+                Write-Host "Sprawdzanie portu $port..." -ForegroundColor Gray
+                $response = Invoke-WebRequest -Uri "http://localhost:$port" -TimeoutSec 8
+                if ($response.StatusCode -eq 200) {
+                    Write-Host "✅ Frontend dziala na porcie $port!" -ForegroundColor Green
+                    $frontendUrl = "http://localhost:$port"
+                    $frontendFound = $true
+                    break
                 }
+            } catch {
+                # Port nie odpowiada - próbuj następny
+                continue
             }
         }
         
@@ -271,10 +257,8 @@ function Start-Frontend {
             Write-Host "🌐 Frontend dostępny na: $frontendUrl" -ForegroundColor Cyan
             return $true
         } else {
-            Write-Host "❌ BŁĄD: Frontend nie uruchomił się prawidłowo" -ForegroundColor Red
-            Write-Host "💡 Sprawdź okno terminala z '$npmCommand'" -ForegroundColor Yellow
-            Write-Host "🔍 Oczekiwany port: $expectedPort" -ForegroundColor Yellow
-            Write-Host "📋 Sprawdzone porty: 3000, 3002-3004" -ForegroundColor Gray
+            Write-Host "❌ BŁĄD: Frontend nie odpowiada na żadnym porcie (3000, 3002-3005)" -ForegroundColor Red
+            Write-Host "💡 Sprawdź okno terminala z 'npm run dev'" -ForegroundColor Yellow
             return $false
         }
         

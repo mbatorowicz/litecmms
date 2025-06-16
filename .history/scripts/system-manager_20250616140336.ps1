@@ -271,10 +271,8 @@ function Start-Frontend {
             Write-Host "🌐 Frontend dostępny na: $frontendUrl" -ForegroundColor Cyan
             return $true
         } else {
-            Write-Host "❌ BŁĄD: Frontend nie uruchomił się prawidłowo" -ForegroundColor Red
-            Write-Host "💡 Sprawdź okno terminala z '$npmCommand'" -ForegroundColor Yellow
-            Write-Host "🔍 Oczekiwany port: $expectedPort" -ForegroundColor Yellow
-            Write-Host "📋 Sprawdzone porty: 3000, 3002-3004" -ForegroundColor Gray
+            Write-Host "❌ BŁĄD: Frontend nie odpowiada na żadnym porcie (3000, 3002-3005)" -ForegroundColor Red
+            Write-Host "💡 Sprawdź okno terminala z 'npm run dev'" -ForegroundColor Yellow
             return $false
         }
         
