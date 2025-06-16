@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import SystemStatus from '@/components/dashboard/SystemStatus';
 
 export default function Home() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,6 +14,11 @@ export default function Home() {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
 
   if (loading) {
     return (
@@ -51,9 +56,7 @@ export default function Home() {
                 <p className="text-sm text-gray-500">{user.role}</p>
               </div>
               <button 
-                onClick={() => {
-                  // Logout funkcjonalność będzie dodana później
-                }}
+                onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
                 Wyloguj

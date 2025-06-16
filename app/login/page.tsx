@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { t } = useTranslation('auth');
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,25 +18,14 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // Logowanie pomyślne - przekieruj do dashboard
+      const success = await login(email, password);
+      if (success) {
         router.push('/');
       } else {
-        setError(data.message || t('loginError'));
+        setError('Nieprawidłowe dane logowania');
       }
     } catch (err) {
-      setError(t('loginError'));
+      setError('Błąd logowania');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
@@ -48,13 +37,13 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">LiteCMMS v2.0</h1>
-          <p className="text-gray-600 mt-2">{t('login')}</p>
+          <p className="text-gray-600 mt-2">Zaloguj się</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              {t('email')}
+              Email
             </label>
             <input
               id="email"
@@ -70,7 +59,7 @@ export default function LoginPage() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              {t('password')}
+              Hasło
             </label>
             <input
               id="password"
@@ -95,7 +84,7 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Logowanie...' : t('login')}
+            {loading ? 'Logowanie...' : 'Zaloguj się'}
           </button>
         </form>
 
