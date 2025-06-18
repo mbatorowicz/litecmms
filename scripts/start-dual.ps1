@@ -4,7 +4,7 @@
 param(
     [switch]$SkipPortCheck,
     [switch]$SkipPostgreSQL,
-    [int]$WaitTimeout = 45
+    [int]$WaitTimeout = 90
 )
 
 # Import modules
@@ -78,8 +78,8 @@ if (-not $backendStarted) {
 Write-Host ""
 
 # STEP 4: Wait a moment before starting frontend
-Write-Host "Waiting 3 seconds before starting frontend..." -ForegroundColor Gray
-Start-Sleep -Seconds 3
+Write-Host "Waiting 5 seconds before starting frontend..." -ForegroundColor Gray
+Start-Sleep -Seconds 5
 
 # STEP 5: Start frontend in new terminal
 Write-Host "STEP 4: Starting frontend..." -ForegroundColor Yellow
@@ -105,10 +105,10 @@ Show-PortStatus
 
 # Test endpoints (optional)
 Write-Host "Testing endpoints..." -ForegroundColor Yellow
-Start-Sleep -Seconds 2
+Start-Sleep -Seconds 5
 
 try {
-    $healthCheck = Invoke-RestMethod -Uri "http://localhost:3001/health" -TimeoutSec 5 -ErrorAction SilentlyContinue
+    $healthCheck = Invoke-RestMethod -Uri "http://localhost:3001/health" -TimeoutSec 10 -ErrorAction SilentlyContinue
     if ($healthCheck) {
         Write-Host "Backend responding: $($healthCheck.message)" -ForegroundColor Green
     } else {
@@ -119,7 +119,7 @@ try {
 }
 
 try {
-    $frontendCheck = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 5 -ErrorAction SilentlyContinue
+    $frontendCheck = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 15 -ErrorAction SilentlyContinue
     if ($frontendCheck.StatusCode -eq 200) {
         Write-Host "Frontend responding (HTTP $($frontendCheck.StatusCode))" -ForegroundColor Green
     } else {

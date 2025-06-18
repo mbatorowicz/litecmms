@@ -39,8 +39,8 @@ function Get-PortProcess {
         # Method 2: netstat (fallback)
         $netstatOutput = netstat -ano | findstr ":$Port.*LISTENING"
         if ($netstatOutput) {
-            $pid = ($netstatOutput -split '\s+')[-1]
-            return [int]$pid
+            $processId = ($netstatOutput -split '\s+')[-1]
+            return [int]$processId
         }
     } catch { }
     
@@ -61,20 +61,20 @@ function Stop-ProcessOnPort {
         return $true
     }
     
-    $pid = Get-PortProcess -Port $Port
-    if (-not $pid) {
+    $processId = Get-PortProcess -Port $Port
+    if (-not $processId) {
         Write-Host "  Cannot find process on port $Port" -ForegroundColor Yellow
         return $false
     }
     
     try {
-        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
         if ($process) {
             $processName = $process.ProcessName
-            Write-Host "  Found process: $processName (PID: $pid)" -ForegroundColor Gray
+            Write-Host "  Found process: $processName (PID: $processId)" -ForegroundColor Gray
             
             # Kill process
-            taskkill /F /PID $pid 2>$null | Out-Null
+            taskkill /F /PID $processId 2>$null | Out-Null
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "  Process $processName stopped" -ForegroundColor Green
                 Start-Sleep -Seconds 1
@@ -92,11 +92,11 @@ function Stop-ProcessOnPort {
                 return $false
             }
         } else {
-            Write-Host "  Process PID $pid does not exist" -ForegroundColor Yellow
+            Write-Host "  Process PID $processId does not exist" -ForegroundColor Yellow
             return $false
         }
     } catch {
-        Write-Host "  Error stopping process PID $pid" -ForegroundColor Red
+        Write-Host "  Error stopping process PID $processId" -ForegroundColor Red
         return $false
     }
 }
@@ -143,19 +143,24 @@ function Show-PortStatus {
         $isOccupied = Test-PortOccupied -Port $portInfo.Port
         
         if ($isOccupied) {
-            $pid = Get-PortProcess -Port $portInfo.Port
+            $processId = Get-PortProcess -Port $portInfo.Port
             $processName = "unknown"
             
-            if ($pid) {
+            if ($processId) {
                 try {
-                    $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+                    $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
                     if ($process) {
                         $processName = $process.ProcessName
                     }
                 } catch { }
             }
             
-            Write-Host "  Port $($portInfo.Port) ($($portInfo.Name)): OCCUPIED by $processName (PID: $pid)" -ForegroundColor Red
+            # PostgreSQL is positive when running
+            if ($portInfo.Name -eq "PostgreSQL") {
+                Write-Host "  Port $($portInfo.Port) ($($portInfo.Name)): RUNNING on $processName (PID: $processId)" -ForegroundColor Green
+            } else {
+                Write-Host "  Port $($portInfo.Port) ($($portInfo.Name)): OCCUPIED by $processName (PID: $processId)" -ForegroundColor Red
+            }
         } else {
             Write-Host "  Port $($portInfo.Port) ($($portInfo.Name)): FREE" -ForegroundColor Green
         }

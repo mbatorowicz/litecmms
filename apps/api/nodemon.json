@@ -2,7 +2,7 @@
   "watch": ["**/*.ts"],
   "ext": "ts,json",
   "ignore": ["node_modules", "dist", "**/*.test.ts"],
-  "exec": "npx ts-node index.ts",
+  "exec": "pnpm exec ts-node index.ts",
   "env": {
     "NODE_ENV": "development"
   }

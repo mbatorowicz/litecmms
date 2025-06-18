@@ -2,10 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 interface AuditData {
-  action: string;
-  resource: string;
-  resourceId?: string;
-  details?: Record<string, unknown>;
+  entity: string;
+  entityId: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  oldValues?: any;
+  newValues?: any;
 }
 
 interface Company {
@@ -27,7 +28,7 @@ declare module 'fastify' {
     authorize: (allowedRoles: string[]) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     authorizeLocation: (locationId: string) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     logAudit: (request: FastifyRequest, auditData: AuditData) => Promise<void>;
-    createAuditDiff: (oldData: Record<string, unknown>, newData: Record<string, unknown>) => Record<string, unknown>;
+    createAuditDiff: (oldData: any, newData: any) => { oldValues: any; newValues: any };
   }
 
   interface FastifyRequest {

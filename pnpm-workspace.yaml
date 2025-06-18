@@ -1,3 +1,6 @@
+# PNPM Workspace Configuration for LiteCMMS Monorepo
 packages:
+  # Applications
   - "apps/*"
+  # Shared packages
   - "packages/*" 

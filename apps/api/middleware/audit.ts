@@ -172,12 +172,6 @@ function getClientIp(request: FastifyRequest): string {
   return request.socket.remoteAddress || 'unknown';
 }
 
-// Rozszerzenie typu FastifyInstance
-declare module 'fastify' {
-  interface FastifyInstance {
-    logAudit: (request: FastifyRequest, auditData: AuditData) => Promise<void>;
-    createAuditDiff: (oldData: any, newData: any) => { oldValues: any; newValues: any };
-  }
-}
+// Types are declared in types/fastify.d.ts
 
 export default auditMiddleware; 
