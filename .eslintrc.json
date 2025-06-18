@@ -1,6 +1,43 @@
 {
+  "root": true,
   "extends": [
     "next/core-web-vitals",
     "next/typescript"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./apps/*/tsconfig.json", "./packages/*/tsconfig.json"]
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/prefer-nullish-coalescing": "error",
+    "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/strict-boolean-expressions": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "object-shorthand": "error",
+    "prefer-template": "error",
+    "prefer-destructuring": ["error", { "object": true, "array": false }]
+  },
+  "overrides": [
+    {
+      "files": ["apps/api/**/*.ts"],
+      "extends": ["@typescript-eslint/recommended"],
+      "parserOptions": {
+        "project": "./apps/api/tsconfig.json"
+      }
+    },
+    {
+      "files": ["apps/web/**/*.{ts,tsx}"],
+      "extends": ["next/core-web-vitals", "next/typescript"],
+      "parserOptions": {
+        "project": "./apps/web/tsconfig.json"
+      }
+    }
   ]
 }

@@ -1,8 +1,8 @@
 'use client';
 
-import '@/i18n';
+import '@/lib/i18n';
 import { useState, useEffect } from 'react';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, Globe } from 'lucide-react';
 
 const languages = [
@@ -12,7 +12,7 @@ const languages = [
 ];
 
 export function LanguageSwitcher() {
-  // const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 

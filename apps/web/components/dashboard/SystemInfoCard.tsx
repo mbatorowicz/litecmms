@@ -1,6 +1,6 @@
 'use client';
 
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { 
   Wrench, 
   ClipboardList, 
@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export function SystemInfoCard() {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const features = [
     { icon: Wrench, text: t('machines.title') },

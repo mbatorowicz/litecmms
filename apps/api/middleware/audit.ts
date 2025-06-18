@@ -162,14 +162,14 @@ function getClientIp(request: FastifyRequest): string {
   const xRealIp = request.headers['x-real-ip'];
   
   if (typeof xForwardedFor === 'string') {
-    return xForwardedFor.split(',')[0].trim();
+    return xForwardedFor.split(',')[0]?.trim() ?? 'unknown';
   }
   
   if (typeof xRealIp === 'string') {
     return xRealIp;
   }
   
-  return request.socket.remoteAddress || 'unknown';
+  return request.socket.remoteAddress ?? 'unknown';
 }
 
 // Types are declared in types/fastify.d.ts

@@ -2,9 +2,9 @@ import { StatusIndicator } from '@/components/ui/StatusIndicator';
 
 export function SystemStatusCard() {
   // Tymczasowo hardcoded - dodamy hooki później
-  const apiStatus = 'online';
+  const apiStatus = 'success' as const;
   const apiMessage = 'API działa poprawnie';
-  const dbStatus = 'online';
+  const dbStatus = 'success' as const;
   const dbMessage = 'Baza danych połączona';
 
   return (

@@ -1,6 +1,6 @@
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
-import { ApiResponse, Machine, MaintenanceTask, Alert } from '@/types/api';
+import { type ApiResponse, type Machine, type MaintenanceTask, type Alert } from '@/types/api';
 
 // Query Keys
 export const queryKeys = {

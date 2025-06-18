@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 
@@ -9,6 +9,8 @@ interface User {
   email: string;
   name?: string;
   role?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 interface AuthContextProps {
@@ -56,9 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logowanie
   const login = async (email: string, password: string) => {
     setLoading(true);
-    let res;
     try {
-      res = await apiClient.post('/api/auth/login', { email, password });
+      const res = await apiClient.post<{token: string; user: User}>('/api/auth/login', { email, password });
       if (res.data && res.data.token && res.data.user) {
         setToken(res.data.token);
         setUser(res.data.user);
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setToken(null);
       localStorage.removeItem('token');
-      console.error('Błąd logowania:', e, res?.data);
+      console.error('Błąd logowania:', e);
       throw e;
     } finally {
       setLoading(false);

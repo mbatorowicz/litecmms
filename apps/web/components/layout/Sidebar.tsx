@@ -3,14 +3,14 @@ import Link from 'next/link';
 
 const menu = [
   { name: 'Dashboard', icon: <Home />, href: '/' },
-  { name: 'Maszyny i Linie', icon: <BarChart2 />, href: '#' },
-  { name: 'Harmonogram', icon: <Calendar />, href: '#' },
-  { name: 'Zlecenia', icon: <ClipboardList />, href: '#' },
-  { name: 'Awarie', icon: <AlertTriangle />, href: '#' },
-  { name: 'Magazyn', icon: <Warehouse />, href: '#' },
-  { name: 'Raporty', icon: <FileText />, href: '#' },
-  { name: 'Zespół', icon: <Users />, href: '#' },
-  { name: 'Ustawienia', icon: <Settings />, href: '#' },
+  { name: 'Maszyny i Linie', icon: <BarChart2 />, href: '/machines' },
+  { name: 'Harmonogram', icon: <Calendar />, href: '/schedule' },
+  { name: 'Zlecenia', icon: <ClipboardList />, href: '/work-orders' },
+  { name: 'Awarie', icon: <AlertTriangle />, href: '/alerts' },
+  { name: 'Magazyn', icon: <Warehouse />, href: '/inventory' },
+  { name: 'Raporty', icon: <FileText />, href: '/reports' },
+  { name: 'Zespół', icon: <Users />, href: '/users' },
+  { name: 'Ustawienia', icon: <Settings />, href: '/settings' },
 ];
 
 export default function Sidebar() {
@@ -23,7 +23,7 @@ export default function Sidebar() {
         <ul className="flex flex-col gap-1">
           {menu.map((item, idx) => (
             <li key={idx}>
-              <Link href={item.href} className="flex items-center gap-3 px-6 py-3 rounded-lg text-neutral-700 dark:text-neutral-200 hover:bg-orange-100 dark:hover:bg-orange-900 transition font-medium">
+              <Link href={item.href as any} className="flex items-center gap-3 px-6 py-3 rounded-lg text-neutral-700 dark:text-neutral-200 hover:bg-orange-100 dark:hover:bg-orange-900 transition font-medium">
                 <span className="w-5 h-5">{item.icon}</span>
                 {item.name}
               </Link>

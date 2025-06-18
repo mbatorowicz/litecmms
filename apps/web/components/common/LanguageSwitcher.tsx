@@ -1,10 +1,10 @@
 'use client';
 
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 
 export function LanguageSwitcher() {
-  // const { i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const languages = [
     { code: 'pl', name: 'Polski', flag: '🇵🇱' },

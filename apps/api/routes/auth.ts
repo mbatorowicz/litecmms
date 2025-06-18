@@ -112,7 +112,7 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
       if (error instanceof z.ZodError) {
         reply.code(400).send({
           error: 'Błąd walidacji',
-          message: error.errors[0].message,
+          message: error.errors[0]?.message ?? 'Błąd walidacji danych',
           details: error.errors
         });
         return;
@@ -152,7 +152,7 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
         lastName,
         password,
         companyName,
-        phone
+        phone: phone ?? null
       });
 
       reply.code(201).send({
@@ -173,7 +173,7 @@ const authRoutes: FastifyPluginAsync = async function (fastify, opts) {
       if (error instanceof z.ZodError) {
         reply.code(400).send({
           error: 'Błąd walidacji',
-          message: error.errors[0].message,
+          message: error.errors[0]?.message ?? 'Błąd walidacji danych',
           details: error.errors
         });
         return;

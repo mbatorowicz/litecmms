@@ -1,6 +1,6 @@
 'use client';
 
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { LogOut, User } from 'lucide-react';
 import Image from 'next/image';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
@@ -15,7 +15,7 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ onLogout, user }: DashboardHeaderProps) {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">

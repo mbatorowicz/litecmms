@@ -123,7 +123,7 @@ export class AuthService {
     lastName: string;
     password: string;
     companyName: string;
-    phone?: string;
+    phone?: string | null;
   }) {
     const { email, username, firstName, lastName, password, companyName, phone } = userData;
     
@@ -147,7 +147,7 @@ export class AuthService {
           firstName,
           lastName,
           passwordHash,
-          phone,
+          ...(phone !== undefined && { phone }),
           role: 'ADMINISTRATOR',
           companyId: company.id,
           language: 'pl',

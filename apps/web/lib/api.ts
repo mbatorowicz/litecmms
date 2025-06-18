@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ApiResponse, ErrorResponse } from '@/types/api';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import { type ApiResponse, type ErrorResponse } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 

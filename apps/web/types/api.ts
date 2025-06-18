@@ -52,6 +52,7 @@ export interface Alert {
   createdAt: Date;
   resolvedAt?: Date;
   status: 'active' | 'resolved';
+  isRead?: boolean;
 }
 
 export interface InventoryItem {
