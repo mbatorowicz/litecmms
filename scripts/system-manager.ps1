@@ -1,5 +1,5 @@
-# LiteCMMS System Manager v2.0 - ZREFAKTORYZOWANY
-# Modularny skrypt zarządzania systemem
+# LiteCMMS System Manager v2.0 - REFACTORED
+# Modular system management script
 
 param(
     [Parameter(Mandatory=$true)]
@@ -7,82 +7,57 @@ param(
     [string]$Action
 )
 
-# Import modułów
+# Import modules
 $ModulePath = Join-Path $PSScriptRoot "modules"
 Import-Module (Join-Path $ModulePath "ProcessManager.psm1") -Force
-Import-Module (Join-Path $ModulePath "PortTester.psm1") -Force
-Import-Module (Join-Path $ModulePath "ServiceStarter.psm1") -Force
+Import-Module (Join-Path $ModulePath "SmartPortManager.psm1") -Force
 Import-Module (Join-Path $ModulePath "SystemTester.psm1") -Force
 
-# Nagłówek
+# Header
 Write-Host "=== LiteCMMS System Manager v2.0 ===" -ForegroundColor Cyan
-Write-Host "Akcja: $Action" -ForegroundColor Yellow
-Write-Host "Wersja: ZREFAKTORYZOWANA (modułowa)" -ForegroundColor Green
+Write-Host "Action: $Action" -ForegroundColor Yellow
+Write-Host "Version: REFACTORED (modular)" -ForegroundColor Green
 Write-Host "======================================" -ForegroundColor Cyan
 
-# Główna logika - ZNACZNIE PROSTSZA!
+# Main logic
 switch ($Action) {
     "stop" {
         Write-Host ""
         Stop-AllNodeProcesses
         Clear-PowerShellJobs
-        Test-SystemPorts
-        Write-Host "System zatrzymany" -ForegroundColor Green
+        Show-PortStatus
+        Write-Host "System stopped" -ForegroundColor Green
     }
     
     "start" {
         Write-Host ""
+        Write-Host "=== STARTING SYSTEM ===" -ForegroundColor Cyan
+        Write-Host "Note: Use 'pnpm start' for dual terminal mode (recommended)" -ForegroundColor Yellow
+        Write-Host "This single terminal mode is for compatibility only" -ForegroundColor Gray
+        Write-Host ""
+        
         Stop-AllNodeProcesses
         Clear-PowerShellJobs
-        Test-SystemPorts
+        Show-PortStatus
         
-        Write-Host ""
-        Write-Host "=== URUCHAMIANIE SYSTEMU ===" -ForegroundColor Cyan
-        
-        $backendOk = Start-Backend
-        if ($backendOk) {
-            $frontendOk = Start-Frontend
-            if ($frontendOk) {
-                Write-Host ""
-                Test-SystemStatus
-                Write-Host ""
-                Write-Host "=== SYSTEM URUCHOMIONY ===" -ForegroundColor Green
-                Write-Host "Frontend: http://localhost:3000" -ForegroundColor White
-                Write-Host "Backend:  http://localhost:3001" -ForegroundColor White
-                Write-Host "Health:   http://localhost:3001/health" -ForegroundColor White
-                Write-Host "Status:   http://localhost:3001/api/system-status" -ForegroundColor White
-                Write-Host ""
-                Write-Host "UWAGA: Frontend ZAWSZE na porcie 3000!" -ForegroundColor Yellow
-            } else {
-                Write-Host "BŁĄD: Frontend nie uruchomił się poprawnie" -ForegroundColor Red
-            }
-        } else {
-            Write-Host "BŁĄD: Backend nie uruchomił się poprawnie" -ForegroundColor Red
-        }
+        Write-Host "Please use 'pnpm start' for better experience" -ForegroundColor Yellow
     }
     
     "restart" {
         Write-Host ""
-        Write-Host "=== RESTART SYSTEMU ===" -ForegroundColor Yellow
+        Write-Host "=== RESTARTING SYSTEM ===" -ForegroundColor Yellow
         
         Stop-AllNodeProcesses
         Clear-PowerShellJobs
         Start-Sleep -Seconds 2
         
-        Test-SystemPorts
-        $backendOk = Start-Backend
-        if ($backendOk) {
-            $frontendOk = Start-Frontend
-            if ($frontendOk) {
-                Test-SystemStatus
-                Write-Host "=== RESTART ZAKOŃCZONY ===" -ForegroundColor Green
-            }
-        }
+        Show-PortStatus
+        Write-Host "Use 'pnpm start' to start system in dual terminal mode" -ForegroundColor Yellow
     }
     
     "status" {
         Write-Host ""
-        Test-SystemPorts
+        Show-PortStatus
         Write-Host ""
         Test-SystemStatus
         Show-PowerShellJobs
@@ -90,4 +65,4 @@ switch ($Action) {
 }
 
 Write-Host ""
-Write-Host "=== KONIEC SYSTEM MANAGER v2.0 ===" -ForegroundColor Cyan 
+Write-Host "=== SYSTEM MANAGER v2.0 FINISHED ===" -ForegroundColor Cyan

@@ -1,0 +1,21 @@
+# Build outputs
+.next/
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.d.ts
+coverage/
+
+# Database
+prisma/migrations/
+
+# Config files
+*.config.js
+tailwind.config.js
+
+# Logs
+*.log 

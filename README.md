@@ -1,4 +1,4 @@
-# LiteCMMS v2.0
+# LiteCMMS v2.0 - Advanced CMMS System
 
 ## 📋 Opis Projektu
 
@@ -12,16 +12,35 @@
 - Raporty i analityka
 - 5 poziomów ról użytkowników
 - Wielojęzyczność (PL/EN/DE)
+- Professional Dashboard z KPI Cards, Alert Panel, Maintenance Calendar
+
+## 🏗️ Architektura Monorepo
+
+### 📁 Struktura Projektu
+```
+LiteCMMS/
+├── apps/
+│   ├── web/          # Frontend (Next.js 15, App Router)
+│   └── api/          # Backend (Fastify)
+├── packages/
+│   ├── shared/       # Wspólne typy i utilities
+│   ├── ui/           # Wspólne komponenty UI
+│   └── config/       # Konfiguracja (ESLint, TypeScript)
+├── scripts/          # Skrypty PowerShell automatyzacji
+└── turbo.json        # Konfiguracja Turborepo
+```
 
 ## 🛠️ Stack Techniczny
 
-### Frontend
+### Frontend (apps/web/)
 - **Next.js 15** - React framework z App Router
 - **TypeScript** - Typowanie statyczne
 - **Tailwind CSS** - Stylowanie
+- **Radix UI** - Komponenty UI
 - **Wielojęzyczność** - i18n z obsługą PL/EN/DE
+- **Zustand** - State management
 
-### Backend
+### Backend (apps/api/)
 - **Fastify** - Szybki web framework dla Node.js
 - **TypeScript** - Typowanie statyczne
 - **Prisma ORM** - Object-Relational Mapping
@@ -30,16 +49,16 @@
 - **WebSockets** - Komunikacja real-time
 
 ### DevOps & Narzędzia
-- **Nodemon** - Auto-restart podczas developmentu
-- **ESLint** - Linting kodu
-- **Prettier** - Formatowanie kodu
+- **pnpm workspaces** - Zarządzanie zależnościami monorepo
+- **Turborepo** - Optymalizacja budowania i cachowania
+- **ESLint & Prettier** - Linting i formatowanie kodu
 - **PowerShell Scripts** - Automatyzacja uruchomienia
 
 ## 🚀 Uruchomienie Projektu
 
 ### Wymagania
 - Node.js 18+
-- npm lub yarn
+- pnpm 9.0+
 - PostgreSQL (lokalnie lub Docker)
 
 ### Instalacja
@@ -48,37 +67,37 @@
 ```bash
 git clone <repository-url>
 cd LiteCMMS
-npm install
+pnpm install
 ```
 
 2. **Konfiguracja bazy danych:**
-
-**UWAGA**: Projekt używa `database.env` zamiast `.env` + hardkodowany fallback w kodzie.
-
 ```bash
 # Sprawdź plik database.env (już skonfigurowany)
 # DATABASE_URL="postgresql://postgres:8C5c3Aab5@localhost:5432/litecmms?schema=public"
 
-# Uruchom migracje Prisma
-npx prisma migrate dev
-npx prisma generate
+# Uruchom generowanie Prisma client
+pnpm db:generate
+pnpm db:push
 ```
 
 3. **Uruchomienie w trybie development:**
 
-**ZALECANE (automatyczne):**
+**MONOREPO (zalecane):**
 ```bash
-# Uruchom cały system jedną komendą (DZIAŁA ZAWSZE!)
-npm run simple:start
+# Uruchom cały system - backend + frontend
+pnpm dev
+
+# Uruchom tylko backend API
+pnpm dev:api
+
+# Uruchom tylko frontend
+pnpm dev:web
 ```
 
-**Alternatywnie (ręcznie):**
+**Alternatywnie (skrypty PowerShell):**
 ```bash
-# Terminal 1 - Backend
-npm run dev:server
-
-# Terminal 2 - Frontend  
-npm run dev
+# Uruchom cały system jedną komendą
+pnpm simple:start
 ```
 
 ### Dostęp do aplikacji
@@ -87,61 +106,31 @@ npm run dev
 - **Health Check**: http://localhost:3001/health
 - **System Status**: http://localhost:3001/api/system-status
 
-## 📁 Struktura Projektu
-
-```
-LiteCMMS/
-├── app/                    # Frontend Next.js (App Router)
-│   ├── page.tsx           # Główna strona (po refaktorze: 16 linii!)
-│   ├── layout.tsx         # Layout aplikacji
-│   └── globals.css        # Style globalne
-├── components/            # Komponenty React (po refaktorze)
-│   ├── ui/               # Komponenty UI wielokrotnego użytku
-│   │   ├── StatusIndicator.tsx
-│   │   └── LanguageSwitcher.tsx
-│   └── dashboard/        # Komponenty specyficzne dla dashboard
-│       ├── DashboardHeader.tsx
-│       ├── SystemStatusCard.tsx
-│       ├── FeatureCards.tsx
-│       └── SystemInfoCard.tsx
-├── lib/                  # Utilities i konfiguracja
-│   └── hooks/           # Custom React hooks
-│       └── useSystemStatus.ts
-├── locales/             # Pliki językowe (PL/EN/DE)
-├── server/              # Backend Fastify
-│   ├── index.ts         # Główny plik serwera
-│   ├── routes/          # API routes
-│   └── middleware/      # Middleware
-├── scripts/             # Skrypty automatyzacji
-│   ├── simple-start.ps1 # Główny skrypt uruchamiający
-│   └── system-manager.ps1
-├── prisma/              # Schema bazy danych
-│   └── schema.prisma    # Definicje modeli
-└── package.json         # Zależności i skrypty
-```
-
 ## 🔧 Dostępne Skrypty
 
-### Zarządzanie systemem (ZALECANE):
+### Skrypty monorepo:
 ```bash
-npm run simple:start # Uruchom cały system (backend + frontend) - NIEZAWODNY!
-npm run sys:stop     # Zatrzymaj wszystkie procesy
-npm run sys:status   # Sprawdź status wszystkich komponentów
+pnpm dev                # Uruchom wszystkie aplikacje
+pnpm dev:web           # Frontend (Next.js)
+pnpm dev:api           # Backend (Fastify)
+pnpm build             # Build wszystkich aplikacji
+pnpm lint              # Linting całego projektu
+pnpm type-check        # Type checking
+pnpm clean             # Czyszczenie buildów
 ```
 
-### Skrypty podstawowe:
+### Skrypty bazy danych:
 ```bash
-npm run dev          # Frontend (Next.js) - TYLKO port 3000!
-npm run dev:server   # Backend (Fastify) - port 3001
-npm run build        # Build produkcyjny
-npm run start        # Start produkcyjny
-npm run lint         # Linting
+pnpm db:generate       # Generuj Prisma client
+pnpm db:push          # Push schema do bazy
+pnpm db:studio        # Prisma Studio
 ```
 
-### Skrypty pomocnicze:
+### Skrypty zarządzania systemem:
 ```bash
-npm run stop-all     # Zatrzymaj wszystko
-npm run reset        # Pełny reset systemu
+pnpm simple:start     # Uruchom cały system (PowerShell)
+pnpm sys:stop         # Zatrzymaj wszystkie procesy
+pnpm sys:status       # Sprawdź status komponentów
 ```
 
 ## 🌐 Wielojęzyczność
@@ -157,100 +146,67 @@ Przełączanie języków dostępne w interfejsie użytkownika.
 
 1. **Super Admin** - Pełny dostęp do systemu
 2. **Administrator** - Zarządzanie użytkownikami i konfiguracją
-3. **Menadzer** - Zarządzanie operacyjne
+3. **Menadżer** - Zarządzanie operacyjne
 4. **Operator** - Zgłaszanie awarii/potrzeby interwencji technika
-4. **Technik** - Wykonywanie prac konserwacyjnych
-5. **Raporty** - Tylko odczyt/generowanie raportów, analiz
+5. **Technik** - Wykonywanie prac konserwacyjnych
+6. **Raporty** - Tylko odczyt/generowanie raportów, analiz
 
-## 📊 Status Systemu
+## 📊 Dashboard Features
 
-**Sprawdzenie statusu:**
-```bash
-npm run sys:status  # Kompletny status systemu
-```
+### KPI Cards
+- OEE (Overall Equipment Effectiveness): 87.5%
+- Dostępność maszyn: 94.2%
+- MTTR (Mean Time To Repair): 2.3h
+- Koszty konserwacji: 15.4k PLN
 
-**Lub bezpośrednio:**
-- Status API: http://localhost:3001/api/system-status
-- Health Check: http://localhost:3001/health
+### Alert Panel
+- Krytyczne awarie
+- Ostrzeżenia konserwacji
+- Alerty magazynowe
 
-## 💡 Refaktor i Czysta Architektura
+### Maintenance Calendar
+- Zadania dzisiaj/nadchodzące/przeterminowane
+- Machine Status Overview (5 maszyn w czasie rzeczywistym)
 
-**Po refaktorze (FAZA 4)** główny plik `app/page.tsx` został podzielony z **305 linii** na:
+## 🎯 Korzyści Architektury Monorepo
 
-### 🧩 Modularne komponenty:
-- **DashboardHeader** - Nagłówek z przełącznikiem języka
-- **SystemStatusCard** - Status API i bazy danych  
-- **FeatureCards** - Grid funkcjonalności CMMS
-- **SystemInfoCard** - Informacje o systemie
-- **StatusIndicator** - Wielokrotnego użytku wskaźnik statusu
-- **useSystemStatus** - Custom hook do zarządzania stanem
+### 1. Separacja Odpowiedzialności
+- Frontend i backend w oddzielnych aplikacjach
+- Wspólny kod w dedykowanych pakietach
+- Czytelna struktura folderów
 
-### 📊 Korzyści refaktoru:
-- ✅ **Czytelność** - każdy komponent ma jedną odpowiedzialność
-- ✅ **Maintainability** - łatwiej dodawać nowe funkcje
-- ✅ **Reużywalność** - komponenty można wykorzystać ponownie
-- ✅ **Testowanie** - łatwiej testować małe komponenty
+### 2. Optymalizacja Wydajności
+- Turborepo cache dla szybszych buildów
+- Równoległe uruchamianie procesów
+- Incremental builds
 
-## 🔧 System Automatyzacji
+### 3. Developer Experience
+- Lepsze IDE support
+- Jasne zależności między pakietami
+- Zintegrowane linting i type checking
 
-Projekt zawiera zaawansowany system automatycznego zarządzania procesami developmentu.
+### 4. Skalowalność
+- Łatwe dodawanie nowych aplikacji
+- Możliwość separacji do mikrousług
+- Przygotowanie pod deployment
 
-### Główne funkcje:
-- ✅ **Automatyczne uruchamianie** backend + frontend
-- ✅ **Rozwiązywanie konfliktów portów**
-- ✅ **Cleanup procesów** przed startem
-- ✅ **Testowanie endpointów** po uruchomieniu
-- ✅ **Diagnostyka systemu** w czasie rzeczywistym
+## 💡 Status Refaktoryzacji
 
-### Workflow developmentu:
-```bash
-# Rano
-npm run simple:start  # Uruchom wszystko (NIEZAWODNY!)
+**✅ UKOŃCZONE:**
+- Modernizacja do struktury monorepo
+- Separacja frontend/backend
+- Konfiguracja pnpm workspaces + Turborepo
+- Migracja do nowoczesnej architektury 2025
+- Professional dashboard z wszystkimi komponentami
+- Wielojęzyczność PL/EN/DE
+- JWT autoryzacja
+- TypeScript bez błędów kompilacji
 
-# Podczas pracy
-npm run sys:status    # Sprawdź co działa
-
-# Wieczorem
-npm run sys:stop      # Zatrzymaj wszystko
-```
-
-### Rozwiązane problemy:
-- **DATABASE_URL**: ✅ **Prawidłowo skonfigurowane** - ładowane z `database.env`
-- **Konflikt portów**: Automatyczne wykrywanie i rozwiązywanie
-- **Niestabilne procesy**: Niezawodny system zarządzania
-- **Kodowanie znaków**: Skrypty bez problemów z polskimi znakami
-
-## 🔒 Bezpieczeństwo
-
-- JWT dla autoryzacji
-- Hashowanie haseł
-- CORS skonfigurowany
-- Walidacja danych wejściowych
-- Role-based access control (RBAC)
-
-## 📝 Licencja
-
-Projekt prywatny - wszystkie prawa zastrzeżone.
-
-## 🤝 Wsparcie
-
-W przypadku problemów lub pytań, skontaktuj się z zespołem deweloperskim.
-
-## 🔄 Kontynuacja Pracy z AI
-
-Jeśli pracujesz z AI asystentem nad tym projektem:
-
-1. **W nowej sesji napisz**: *"Przeczytaj AI_CONTEXT.md i README.md, a następnie kontynuuj pracę nad LiteCMMS"*
-2. **AI automatycznie**: Załaduje pełny kontekst projektu i będzie wiedzieć co robić dalej
-3. **Przed końcem sesji**: AI zaktualizuje pliki kontekstu z postępami
-
-**Pliki kontekstu:**
-- `AI_CONTEXT.md` - Pełny kontekst dla AI (stan systemu, historia, następne kroki)
-- `README.md` - Dokumentacja projektu dla ludzi
+**📊 Rezultat:**
+System przygotowany pod skalowanie, łatwy w utrzymaniu, z czystą architekturą i nowoczesnymi standardami development.
 
 ---
 
-**Ostatnia aktualizacja**: Czerwiec 2025  
 **Wersja**: 2.0.0  
-**Status**: Po refaktorze - Gotowy do rozwoju funkcjonalności CMMS  
-**Refaktor**: ✅ Ukończony (305 linii → 6 komponentów + 1 hook) 
+**Status**: ✅ Produkcyjny - Monorepo Structure Ready  
+**Ostatnia aktualizacja**: Styczeń 2025 

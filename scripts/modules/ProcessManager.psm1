@@ -1,54 +1,54 @@
 # LiteCMMS Process Manager Module
-# Zarządzanie procesami Node.js, npm i PowerShell
+# Managing Node.js, npm and PowerShell processes
 
-# Funkcja do zabijania procesów Node.js
+# Function to kill Node.js processes
 function Stop-AllNodeProcesses {
-    Write-Host "Zatrzymywanie wszystkich procesów Node.js..." -ForegroundColor Yellow
+    Write-Host "Stopping all Node.js processes..." -ForegroundColor Yellow
     
     $processesKilled = $false
     
-    # Metoda 1: taskkill dla node.exe
+    # Method 1: taskkill for node.exe
     try {
         taskkill /F /IM node.exe 2>$null | Out-Null
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "Procesy node.exe zatrzymane (taskkill)" -ForegroundColor Green
+            Write-Host "Node.exe processes stopped (taskkill)" -ForegroundColor Green
             $processesKilled = $true
         }
     } catch {
-        Write-Host "Taskkill node.exe nie powiódł się" -ForegroundColor Yellow
+        Write-Host "Taskkill node.exe failed" -ForegroundColor Yellow
     }
     
-    # Metoda 2: taskkill dla nodemon
+    # Method 2: taskkill for nodemon
     try {
         taskkill /F /IM nodemon.exe 2>$null | Out-Null
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "Procesy nodemon.exe zatrzymane (taskkill)" -ForegroundColor Green
+            Write-Host "Nodemon.exe processes stopped (taskkill)" -ForegroundColor Green
             $processesKilled = $true
         }
     } catch {
-        Write-Host "Taskkill nodemon.exe nie powiódł się" -ForegroundColor Yellow
+        Write-Host "Taskkill nodemon.exe failed" -ForegroundColor Yellow
     }
     
-    # Metoda 3: Get-Process (backup)
+    # Method 3: Get-Process (backup)
     try {
         $nodeProcesses = Get-Process -Name "node" -ErrorAction SilentlyContinue
         if ($nodeProcesses) {
             $nodeProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
-            Write-Host "Dodatkowe procesy node zatrzymane (Get-Process)" -ForegroundColor Green
+            Write-Host "Additional node processes stopped (Get-Process)" -ForegroundColor Green
             $processesKilled = $true
         }
         
         $nodemonProcesses = Get-Process -Name "nodemon" -ErrorAction SilentlyContinue
         if ($nodemonProcesses) {
             $nodemonProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
-            Write-Host "Dodatkowe procesy nodemon zatrzymane (Get-Process)" -ForegroundColor Green
+            Write-Host "Additional nodemon processes stopped (Get-Process)" -ForegroundColor Green
             $processesKilled = $true
         }
     } catch {
-        Write-Host "Get-Process cleanup nie powiódł się" -ForegroundColor Yellow
+        Write-Host "Get-Process cleanup failed" -ForegroundColor Yellow
     }
     
-    # Metoda 4: Zabij procesy na portach 3000 i 3001
+    # Method 4: Kill processes on ports 3000 and 3001
     try {
         $port3000 = netstat -ano | findstr :3000 | findstr LISTENING
         $port3001 = netstat -ano | findstr :3001 | findstr LISTENING
@@ -57,7 +57,7 @@ function Stop-AllNodeProcesses {
             $pid3000 = ($port3000 -split '\s+')[-1]
             taskkill /F /PID $pid3000 2>$null
             if ($LASTEXITCODE -eq 0) {
-                Write-Host "Proces na porcie 3000 zatrzymany (PID: $pid3000)" -ForegroundColor Green
+                Write-Host "Process on port 3000 stopped (PID: $pid3000)" -ForegroundColor Green
                 $processesKilled = $true
             }
         }
@@ -66,15 +66,15 @@ function Stop-AllNodeProcesses {
             $pid3001 = ($port3001 -split '\s+')[-1]
             taskkill /F /PID $pid3001 2>$null
             if ($LASTEXITCODE -eq 0) {
-                Write-Host "Proces na porcie 3001 zatrzymany (PID: $pid3001)" -ForegroundColor Green
+                Write-Host "Process on port 3001 stopped (PID: $pid3001)" -ForegroundColor Green
                 $processesKilled = $true
             }
         }
     } catch {
-        Write-Host "Zabijanie procesów na portach nie powiodło się" -ForegroundColor Yellow
+        Write-Host "Killing processes on ports failed" -ForegroundColor Yellow
     }
     
-    # Metoda 5: Zabij wszystkie okna PowerShell z npm
+    # Method 5: Kill all PowerShell windows with npm
     try {
         $npmProcesses = Get-WmiObject Win32_Process | Where-Object { 
             $_.CommandLine -like "*npm run dev*" -or 
@@ -85,39 +85,39 @@ function Stop-AllNodeProcesses {
             foreach ($proc in $npmProcesses) {
                 taskkill /F /PID $proc.ProcessId 2>$null
                 if ($LASTEXITCODE -eq 0) {
-                    Write-Host "Proces npm zatrzymany (PID: $($proc.ProcessId))" -ForegroundColor Green
+                    Write-Host "NPM process stopped (PID: $($proc.ProcessId))" -ForegroundColor Green
                     $processesKilled = $true
                 }
             }
         }
     } catch {
-        Write-Host "Zabijanie procesów npm nie powiodło się" -ForegroundColor Yellow
+        Write-Host "Killing npm processes failed" -ForegroundColor Yellow
     }
     
     if (-not $processesKilled) {
-        Write-Host "Brak procesów Node.js do zatrzymania" -ForegroundColor Gray
+        Write-Host "No Node.js processes to stop" -ForegroundColor Gray
     }
     
     Start-Sleep -Seconds 3
 }
 
-# Funkcja do czyszczenia PowerShell Jobs
+# Function to clear PowerShell Jobs
 function Clear-PowerShellJobs {
-    Write-Host "Czyszczenie PowerShell Jobs..." -ForegroundColor Yellow
+    Write-Host "Clearing PowerShell Jobs..." -ForegroundColor Yellow
     
     try {
         $jobs = Get-Job -ErrorAction SilentlyContinue
         if ($jobs) {
             $jobs | Stop-Job -ErrorAction SilentlyContinue
             $jobs | Remove-Job -Force -ErrorAction SilentlyContinue
-            Write-Host "PowerShell Jobs wyczyszczone" -ForegroundColor Green
+            Write-Host "PowerShell Jobs cleared" -ForegroundColor Green
         } else {
-            Write-Host "Brak Jobs do wyczyszczenia" -ForegroundColor Gray
+            Write-Host "No Jobs to clear" -ForegroundColor Gray
         }
     } catch {
-        Write-Host "Błąd podczas czyszczenia Jobs" -ForegroundColor Red
+        Write-Host "Error clearing Jobs" -ForegroundColor Red
     }
 }
 
-# Export funkcji
+# Export functions
 Export-ModuleMember -Function Stop-AllNodeProcesses, Clear-PowerShellJobs 

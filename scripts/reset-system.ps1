@@ -84,14 +84,23 @@ function Clear-Cache {
     }
 }
 
-# Funkcja do uruchamiania backendu
+# Funkcja do uruchamiania backendu API (monorepo)
 function Start-Backend {
-    Write-Host "🚀 Uruchamianie backendu..." -ForegroundColor Yellow
+    Write-Host "🚀 Uruchamianie Backend API (apps/api)..." -ForegroundColor Yellow
     
-    # Uruchom backend w tle
+    # Sprawdź pnpm
+    try {
+        $pnpmVersion = pnpm --version
+        Write-Host "   Używam pnpm $pnpmVersion" -ForegroundColor Cyan
+    } catch {
+        Write-Host "   ❌ pnpm nie jest zainstalowany!" -ForegroundColor Red
+        return $false
+    }
+    
+    # Uruchom backend API w tle
     $backendJob = Start-Job -ScriptBlock {
         Set-Location $using:PWD
-        npm run dev:server
+        pnpm --filter api dev
     }
     
     Write-Host "   Backend uruchomiony w tle (Job ID: $($backendJob.Id))" -ForegroundColor Green
@@ -111,14 +120,14 @@ function Start-Backend {
     }
 }
 
-# Funkcja do uruchamiania frontendu
+# Funkcja do uruchamiania frontendu Web (monorepo)
 function Start-Frontend {
-    Write-Host "🌐 Uruchamianie frontendu..." -ForegroundColor Yellow
+    Write-Host "🌐 Uruchamianie Frontend Web (apps/web)..." -ForegroundColor Yellow
     
-    # Uruchom frontend w tle
+    # Uruchom frontend Web w tle
     $frontendJob = Start-Job -ScriptBlock {
         Set-Location $using:PWD
-        npm run dev
+        pnpm --filter web dev
     }
     
     Write-Host "   Frontend uruchomiony w tle (Job ID: $($frontendJob.Id))" -ForegroundColor Green

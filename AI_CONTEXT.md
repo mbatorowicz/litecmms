@@ -1,244 +1,118 @@
-# LiteCMMS v2.0 - AI Context & Development History
+# LiteCMMS v2.0 – AI CONTEXT (Kontekst dla AI)
 
-## 🚀 **PROJEKT ZAKOŃCZONY - PHASE 12 COMPLETED**
-**Data ukończenia:** 16 stycznia 2025  
-**Status:** ✅ **PRODUCTION READY**
+**Repozytorium GitHub:** https://github.com/mbatorowicz/litecmms.git
 
----
+*"Jestem menadżerem projektu. Proszę, rozpocznij pracę zgodnie z AI_CONTEXT.md – pracuj małymi krokami, testuj zmiany, oszczędzaj tokeny. Moje pierwsze polecenie: [tu wpisz, co chcesz zrobić]"*
 
-## 📋 **PODSUMOWANIE REFAKTORYZACJI - FAZY 6-12**
+> **ROLA I ZASADY WSPÓŁPRACY**
+> - Właściciel/menadżer projektu: użytkownik (Ty) – zarządzasz projektem, nie musisz znać się na programowaniu.
+> - Developer: AI (ja) – samodzielnie koduję, edytuję dozwolone pliki zgodnie z tym dokumentem, uruchamiam testy po każdej zmianie, pracuję małymi krokami i testuję każdą funkcjonalność.
+> - Ty wydajesz polecenia, ja wykonuję je zgodnie z najlepszymi praktykami, informuję o postępach i problemach.
+> - Nie musisz znać się na kodzie – AI zajmuje się całą stroną techniczną, Ty decydujesz o funkcjach i kierunku rozwoju.
+> - **AI powinno oszczędzać tokeny – wykonuję tylko niezbędne operacje, minimalizuję liczbę zapytań i zmian.**
 
-### **🎯 UKOŃCZONE FAZY:**
-
-#### **✅ PHASE 6: PowerShell Scripts Refactoring**
-- **Zmniejszenie:** 406 linii → 4 moduły (78% redukcja)
-- **Struktura:** `scripts/modules/` - system-info, database, backend, frontend
-- **Plik główny:** `scripts/system-manager.ps1` - centralny manager
-- **Rezultat:** Modularny system zarządzania z lepszą maintainability
-
-#### **✅ PHASE 7: Cleanup (.history)**
-- **Usunięto:** 397 plików historii (.history/*)
-- **Zwolniono:** ~50MB miejsca na dysku
-- **Usprawnienie:** Szybsze operacje git i przeszukiwanie projektu
-
-#### **✅ PHASE 8: Backend TypeScript Organization**
-- **Zorganizowano:** Strukturę katalogów server/
-- **Dodano:** Typy TypeScript, middleware, usługi
-- **Usprawniono:** Architekturę backendu i API
-
-#### **✅ PHASE 9: Tailwind CSS Refactoring**
-- **Zmniejszenie:** 264 linie → 3 moduły (60% redukcja) 
-- **Struktura:** `tailwind/modules/` - base, components, utilities
-- **Plik główny:** `tailwind.config.js` - import modułów
-- **Rezultat:** Lepza organizacja stylów CSS
-
-#### **✅ PHASE 11: Polish Localization Refactoring**
-- **Zmniejszenie:** 252 linie → 8 modułów
-- **Struktura:** `locales/pl/modules/` - base, auth, dashboard, machines, workorders, parts, users, reports
-- **Konfiguracja:** Zaktualizowano `lib/i18n.ts`
-
-#### **✅ PHASE 12: EN/DE Localization + PWA Icons (FINAL)**
-- **Lokalizacja:** Modularyzacja EN/DE (identyczna struktura jak PL)
-- **Łącznie:** 24 pliki modułów (3 języki × 8 modułów)
-- **PWA:** Kompletny zestaw ikon (SVG + PNG)
-- **Naprawy:** Błędy konsoli, metadata Next.js, połączenie z bazą
+> **UWAGA! Wszystkie poniższe informacje są BARDZO WAŻNE i dotyczą CAŁEJ SESJI. AI oraz każdy deweloper MUSI uważnie przeczytać całą zawartość tego pliku przed rozpoczęciem pracy. Każda decyzja, zmiana i odpowiedź powinna być zgodna z tym dokumentem.**
 
 ---
 
-## 🏆 **FINALNE REZULTATY:**
+## TECHNOLOGIE (STOS TECHNOLOGICZNY)
+- **Frontend:** Next.js 13+ (App Router, TypeScript, modularny kod w `src/`)
+- **Backend:** Fastify (Node.js, TypeScript, modularny kod w `server/`)
+- **Baza danych:** PostgreSQL 14+ (Prisma ORM, migracje w `prisma/`)
+- **UI:** Tailwind CSS, Radix UI, własne komponenty w `src/components/`
+- **Autoryzacja:** JWT (token, nie accessToken!)
+- **Wielojęzyczność:** i18next (tłumaczenia w `locales/`, inicjalizacja tylko client-side)
+- **Testy:** Jest, Playwright, testy i skrypty w `scripts/`
+- **Narzędzia:** ESLint, Prettier, Husky, Git, SemVer, Git Flow
+- **Proxy:** Next.js rewrites `/api/*` na backend (port 3001)
+- **Skrypty:** PowerShell/JS w `scripts/` (nie używać && w PowerShell)
 
-### **📊 LICZBY:**
-- **Zrefaktoryzowane pliki:** 50+ 
-- **Utworzone moduły:** 39 (PowerShell: 4, Tailwind: 3, Lokalizacja: 24, PWA: 8)
-- **Usunięte pliki:** 397 (.history)
-- **Redukcja linii kodu:** ~65% w zrefaktoryzowanych sekcjach
-
-### **🔧 ARCHITEKTURA FINALNA:**
-```
-LiteCMMS/
-├── locales/
-│   ├── pl/modules/ (8 plików)
-│   ├── en/modules/ (8 plików) 
-│   └── de/modules/ (8 plików)
-├── scripts/
-│   ├── modules/ (4 pliki)
-│   └── system-manager.ps1
-├── tailwind/
-│   ├── modules/ (3 pliki)
-│   └── tailwind.config.js
-├── public/
-│   ├── favicon.svg/ico
-│   ├── icon-192x192.svg/png
-│   ├── icon-512x512.svg/png
-│   └── site.webmanifest
-├── server/ (zorganizowany)
-└── app/ (Next.js 14+)
-```
-
-### **✅ SYSTEMY OPERACYJNE:**
-- **Frontend:** Next.js (port 3000) - HTTP 200 ✅
-- **Backend:** Fastify (port 3001) - HTTP 200 ✅
-- **Database:** PostgreSQL (port 5432) - Active ✅
-- **PWA:** Kompletne ikony i manifest ✅
-- **Localization:** 3 języki, 8 modułów każdy ✅
+> **ZABRANIA SIĘ zmiany powyższych technologii, frameworków, narzędzi, architektury, sposobu autoryzacji, systemu tłumaczeń, proxy, testów, bez wyraźnej zgody właściciela projektu!**
 
 ---
 
-## 🛠️ **TECHNOLOGIE I KONFIGURACJA**
-
-### **Frontend:**
-- **Framework:** Next.js 14+ (App Router)
-- **Styling:** Tailwind CSS (modularny)
-- **Internationalization:** i18next (3 języki modularnie)
-- **PWA:** Kompletna konfiguracja z ikonami
-- **TypeScript:** Pełne wsparcie
-
-### **Backend:**
-- **Framework:** Fastify
-- **Database:** PostgreSQL + Prisma ORM
-- **Authentication:** JWT
-- **API:** RESTful endpoints
-- **TypeScript:** Pełne wsparcie
-
-### **Database:**
-- **Engine:** PostgreSQL 
-- **ORM:** Prisma
-- **Connection:** DATABASE_URL configured
-- **Status:** Aktywna i połączona
-
-### **Development Tools:**
-- **PowerShell:** Modularny system zarządzania
-- **Git:** Struktura commitów, .gitignore
-- **TypeScript:** Strict mode
-- **ESLint/Prettier:** Code quality
+## Opis systemu
+LiteCMMS v2.0 to nowoczesny, modularny system CMMS (Computerized Maintenance Management System) dla przemysłu, oparty na Next.js (App Router), Fastify, PostgreSQL i Prisma. System obsługuje wielojęzyczność (PL/EN/DE), autoryzację JWT, nowoczesny UI (Tailwind, Radix), dashboardy KPI, zarządzanie maszynami, zadaniami, magazynem i użytkownikami.
 
 ---
 
-## 📱 **PWA (Progressive Web App)**
-
-### **Ikony:**
-- `favicon.svg` (32x32) - ikona zakładek
-- `favicon.ico` - fallback dla starszych przeglądarek  
-- `icon-192x192.svg/png` - główna ikona PWA
-- `icon-512x512.svg/png` - ikona wysokiej jakości
-
-### **Manifest:**
-- `site.webmanifest` - pełna konfiguracja PWA
-- Obsługa install prompts
-- Offline capability ready
-
-### **Gdzie ikony są widoczne:**
-- Zakładki przeglądarki
-- "Dodaj do ekranu głównego" (mobile)
-- Instalacja PWA (desktop/mobile)
-- Lista aplikacji w systemie
+## Kluczowe zasady i architektura
+- **Cały kod aplikacji frontendowej znajduje się w katalogu `src/`** (komponenty, hooki, store, typy, styles, utils, providers, i18n, api).
+- **Tłumaczenia znajdują się w katalogu `locales/`** (PL/EN/DE, podział na moduły).
+- **Zasoby statyczne w katalogu `public/`** (favicony, manifest, ikony, itp.).
+- **Backend w katalogu `server/`** (Fastify, API, middlewares, routes, services, types).
+- **Baza danych i migracje w katalogu `prisma/`** (schema.prisma, migrations/).
+- **Skrypty pomocnicze w katalogu `scripts/`** (start, testy, generatory ikon, PowerShell, JS, README).
+- **Pliki dokumentacyjne:** `README.md`, `AI_CONTEXT.md`, `API.md`, `dok-API.txt` – nie usuwać!
+- **Nie kopiować:** `node_modules/`, `.next/`, `.history/`, `.swc/`, `.git/`, `.vscode/`, `.snapshots/`, `dist/`, `build/`.
 
 ---
 
-## 🌐 **SYSTEM LOKALIZACJI**
-
-### **Obsługiwane języki:**
-- **Polski (pl)** - główny język
-- **Angielski (en)** - pełne tłumaczenie
-- **Niemiecki (de)** - pełne tłumaczenie + dodatkowe sekcje
-
-### **Struktura modularną:**
+## Struktura katalogów (2025 best practices)
 ```
-locales/
-├── pl/modules/
-│   ├── base.json (główne elementy UI)
-│   ├── auth.json (logowanie, rejestracja)
-│   ├── dashboard.json (pulpit główny)
-│   ├── machines.json (maszyny)
-│   ├── workorders.json (zlecenia)
-│   ├── parts.json (części)
-│   ├── users.json (użytkownicy)
-│   └── reports.json (raporty)
-├── en/modules/ (identyczna struktura)
-└── de/modules/ (identyczna struktura + validation)
-```
-
-### **Konfiguracja:**
-- `lib/i18n.ts` - konfiguracja i18next
-- Automatyczna detekcja języka
-- LocalStorage persistence
-- Fallback do polskiego
-
----
-
-## 🔧 **URUCHOMIENIE SYSTEMU**
-
-### **Wymagania:**
-- Node.js 18+
-- PostgreSQL 13+
-- npm/yarn
-
-### **Instalacja:**
-```bash
-npm install
-npm run db:push
-npm run db:generate
-```
-
-### **Uruchomienie deweloperskie:**
-```bash
-# Frontend (port 3000)
-npm run dev
-
-# Backend (port 3001) 
-npm run server
-
-# PowerShell Manager
-./scripts/system-manager.ps1
-```
-
-### **Build produkcyjny:**
-```bash
-npm run build
-npm start
+/
+├── src/                # Kod aplikacji frontendowej (Next.js, TS, modularny)
+│   ├── components/     # Komponenty UI, layout, dashboard, providers, common
+│   ├── hooks/          # Custom hooki React
+│   ├── store/          # Zustand, globalny store
+│   ├── types/          # Typy TypeScript
+│   ├── styles/         # Style globalne
+│   ├── lib/            # API client, utils, providers
+│   ├── i18n.ts         # Inicjalizacja i18next (tylko client-side)
+│   └── pages/          # (jeśli SSR/legacy)
+├── locales/            # Tłumaczenia (PL/EN/DE, podział na moduły)
+├── public/             # Statyczne pliki (favicony, manifest, ikony)
+├── scripts/            # Skrypty startowe, testowe, generatory, PowerShell
+│   └── modules/        # Moduły PowerShell
+├── server/             # Backend (Fastify, API, middlewares, routes, services)
+├── prisma/             # Baza danych, migracje, schema.prisma
+├── README.md           # Dokumentacja użytkownika/dev
+├── AI_CONTEXT.md       # Ten plik – kontekst dla AI
+├── API.md, dok-API.txt # Dokumentacja API
+├── package.json        # Zależności, skrypty
+├── next.config.js      # Konfiguracja Next.js (proxy, rewrites, headers)
+├── tailwind.config.js  # Konfiguracja Tailwind
+├── tsconfig.json       # Konfiguracja TypeScript
+└── ...
 ```
 
 ---
 
-## 📈 **METRYKI PROJEKTU**
-
-### **Performance:**
-- **Bundle size:** Zoptymalizowany przez modularyzację
-- **Load time:** <3s (development)
-- **PWA Score:** 95+ (Lighthouse)
-
-### **Maintainability:**
-- **Code organization:** Modularny design
-- **TypeScript coverage:** 95%+
-- **Documentation:** Pełna
-
-### **Scalability:**
-- **Localization:** Łatwe dodawanie języków
-- **Features:** Modularny system
-- **Database:** Prisma schema evolution
-
----
-
-## 🎉 **PROJEKT ZAKOŃCZONY SUKCESEM**
-
-**LiteCMMS v2.0 jest w 100% gotowy do produkcji!**
-
-### **Osiągnięcia:**
-✅ Pełna modularyzacja systemu  
-✅ 3 języki interfejsu  
-✅ PWA ready z ikonami  
-✅ Wszystkie systemy operacyjne  
-✅ Czysta konsola bez błędów  
-✅ Production-ready codebase  
-
-### **Następne kroki (opcjonalne):**
-- Deployment na produkcję
-- Monitoring i analytics
-- Dodatkowe języki
-- Mobile app (React Native)
+## Kluczowe instrukcje dla AI i kolejnych sesji
+- **Wszelkie zmiany frontendowe wykonuj wyłącznie w katalogu `src/` oraz `locales/` (tłumaczenia).**
+- **Nie przenoś katalogu `locales/` do `src/`!**
+- **Wszelkie zmiany backendowe wykonuj wyłącznie w katalogu `server/` oraz `prisma/`.**
+- **Nie usuwaj ani nie nadpisuj plików dokumentacyjnych (`README.md`, `AI_CONTEXT.md`, `API.md`, `dok-API.txt`).**
+- **Wszędzie używaj klucza `token` (nie `accessToken`) do autoryzacji JWT.**
+- **Wszystkie żądania API frontendowe kieruj przez proxy `/api/*` (Next.js rewrites do backendu na porcie 3001).**
+- **Nie kopiuj katalogów build/cache (`node_modules/`, `.next/`, `.history/`, `.swc/`, `.snapshots/`, `dist/`, `build/`).**
+- **Do uruchomienia systemu wymagane są Node.js 18+, PostgreSQL 14+, 4GB RAM, 10GB HDD.**
+- **Do uruchomienia: `npm install` → `npm run simple:start` (uruchamia backend i frontend, testuje porty, sprawdza health).**
+- **Wszelkie skrypty testowe i startowe znajdują się w katalogu `scripts/` i muszą być zachowane.**
+- **WAŻNE: PowerShell (Windows) NIE obsługuje operatora `&&` jak bash!**
+  - **Nie używaj `&&` w poleceniach, skryptach i instrukcjach dla PowerShell/Windows.**
+  - **Jeśli musisz wykonać kilka poleceń, rozdziel je średnikiem `;` lub osobnymi liniami.**
+  - **AI: Nigdy nie generuj poleceń z `&&` dla PowerShell!**
+- **Wielojęzyczność obsługiwana przez i18next, tłumaczenia w `locales/`, inicjalizacja tylko po stronie klienta.**
+- **Nie przenoś dead code, nie zostawiaj duplikatów, nie zostawiaj starych katalogów typu `backup/`, `lib/`, `components/`, `app/` – kod tylko w `src/`.**
+- **Wszelkie zmiany w strukturze projektu muszą być zgodne z powyższym schematem.**
+- **Wszelkie zmiany w API muszą być odzwierciedlone w plikach `API.md` i `dok-API.txt`.**
 
 ---
 
-**Autor refaktoryzacji:** Claude Sonnet 4  
-**Okres realizacji:** PHASE 6-12  
-**Status finalny:** ✅ **SUKCES - PRODUCTION READY** 
+## Najczęstsze błędy i ich rozwiązania
+- **Brak tłumaczeń:** Upewnij się, że katalog `locales/` jest obecny w głównym katalogu projektu.
+- **Błąd z tokenem:** Używaj wszędzie `token` (nie `accessToken`).
+- **Błąd proxy:** Sprawdź rewrites w `next.config.js` – `/api/*` musi kierować na backend.
+- **Błąd z importami:** Wszystkie importy z `src/`, używaj aliasów (`@/` dla `src/`).
+- **Błąd z i18n:** Importuj i inicjalizuj i18next tylko po stronie klienta.
+- **Błąd z dead code:** Usuwaj stare katalogi i pliki spoza `src/`, `locales/`, `public/`, `scripts/`, `server/`, `prisma/`.
+
+---
+
+## Licencja
+Proprietary – All rights reserved 
+
+## Zasada końca sesji
+- **Przed zakończeniem każdej sesji AI musi podsumować najważniejsze zmiany, decyzje i napotkane problemy.**
+- **AI musi zapytać użytkownika, czy zaktualizować plik AI_CONTEXT.md na podstawie przebiegu sesji.** 

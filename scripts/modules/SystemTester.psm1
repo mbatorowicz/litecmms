@@ -1,73 +1,65 @@
 # LiteCMMS System Tester Module
-# Testowanie funkcjonalności systemu
+# System health and status testing
 
-# Funkcja do testowania systemu
+# Function to test system status
 function Test-SystemStatus {
-    Write-Host "Testowanie systemu..." -ForegroundColor Yellow
-    
     $results = @()
     
-    # Test backendu
+    # Test backend health
     try {
         $health = Invoke-RestMethod -Uri "http://localhost:3001/health" -TimeoutSec 5
         $results += "Backend Health: OK - $($health.message)"
     } catch {
-        $results += "Backend Health: BŁĄD - $($_.Exception.Message)"
+        $results += "Backend Health: ERROR - $($_.Exception.Message)"
     }
     
-    # Test API systemu
+    # Test API system status
     try {
-        $system = Invoke-RestMethod -Uri "http://localhost:3001/api/system-status" -TimeoutSec 5
+        $system = Invoke-RestMethod -Uri "http://localhost:3001/api/status" -TimeoutSec 5
         $dbStatus = $system.database.status
         $results += "System Status: OK - Database: $dbStatus"
     } catch {
-        $results += "System Status: BŁĄD - $($_.Exception.Message)"
+        $results += "System Status: ERROR - $($_.Exception.Message)"
     }
     
-    # Test frontendu - TYLKO PORT 3000!
-    $frontendOk = $false
-    
+    # Test frontend (ALWAYS port 3000)
     try {
         $frontend = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 4
         $results += "Frontend (3000): OK - HTTP $($frontend.StatusCode)"
-        $frontendOk = $true
     } catch {
-        $results += "Frontend: BŁĄD - Nie odpowiada na porcie 3000!"
+        $results += "Frontend: ERROR - Not responding on port 3000!"
     }
     
-    # Wyświetl wyniki
-    Write-Host ""
-    Write-Host "=== WYNIKI TESTÓW ===" -ForegroundColor Cyan
+    # Display results
     foreach ($result in $results) {
         if ($result -like "*OK*") {
-            Write-Host "  $result" -ForegroundColor Green
+            Write-Host $result -ForegroundColor Green
         } else {
-            Write-Host "  $result" -ForegroundColor Red
+            Write-Host $result -ForegroundColor Red
         }
     }
     
-    return $frontendOk
+    return $results
 }
 
-# Funkcja do wyświetlania PowerShell Jobs
+# Function to show PowerShell Jobs
 function Show-PowerShellJobs {
-    Write-Host ""
-    Write-Host "=== POWERSHELL JOBS ===" -ForegroundColor Cyan
-    $jobs = Get-Job -ErrorAction SilentlyContinue
-    if ($jobs) {
-        $jobs | ForEach-Object {
-            $color = switch ($_.State) {
-                "Running" { "Green" }
-                "Completed" { "Blue" }
-                "Failed" { "Red" }
-                default { "Yellow" }
+    try {
+        $jobs = Get-Job -ErrorAction SilentlyContinue
+        if ($jobs) {
+            Write-Host "Active PowerShell Jobs:" -ForegroundColor Yellow
+            foreach ($job in $jobs) {
+                $status = $job.State
+                $color = if ($status -eq "Running") { "Green" } else { "Red" }
+                Write-Host "  Job $($job.Id): $($job.Name) - $status" -ForegroundColor $color
             }
-            Write-Host "  Job $($_.Id): $($_.Name) - $($_.State)" -ForegroundColor $color
+        } else {
+            Write-Host "No active PowerShell Jobs" -ForegroundColor Gray
         }
-    } else {
-        Write-Host "  Brak aktywnych Jobs" -ForegroundColor Gray
+    } catch {
+        Write-Host "Error checking PowerShell Jobs" -ForegroundColor Red
     }
 }
 
-# Export funkcji
+# Export functions
 Export-ModuleMember -Function Test-SystemStatus, Show-PowerShellJobs 

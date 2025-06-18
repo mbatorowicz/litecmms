@@ -110,4 +110,20 @@ Desktop.ini
 
 # Temp files
 qc
-*.tmp 
+*.tmp
+
+# Monorepo
+.turbo/
+apps/*/dist/
+packages/*/dist/
+apps/*/.next/
+node_modules/
+
+# Cache files
+.swc/
+.snapshots/
+*.tsbuildinfo
+
+# Development
+package-lock.json
+logs/ 

@@ -1,0 +1,43 @@
+{
+  "name": "api",
+  "version": "2.0.0",
+  "description": "LiteCMMS API - Fastify Server",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:seed": "ts-node ../prisma/seed.ts"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^9.2.0",
+    "@fastify/cors": "^8.4.2",
+    "@fastify/jwt": "^7.2.3",
+    "@fastify/websocket": "^8.3.0",
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.5.0",
+    "fastify": "^4.24.3",
+    "jsonwebtoken": "^9.0.2",
+    "ws": "^8.14.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.4",
+    "@types/ws": "^8.5.10",
+    "eslint": "^8.56.0",
+    "nodemon": "^3.0.2",
+    "prisma": "^5.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+} 
